@@ -19,11 +19,12 @@ class Account extends Component {
     componentDidMount() {
         AsyncStorage.getItem('userId', (err, result) => {
     
-          fetch('http://localhost:8080/api/getAccountInfo/?id=' + result)
+          fetch(`http://localhost:8080/api/getAccountInfo/?account_type=${"sellers"}&id=${result}`)
           .then((response) => response.json())
           .then((responseJson) => {
     
             this.setState({
+              id: responseJson.id,
               name: responseJson.name,
               email: responseJson.email,
               password: responseJson.password,
@@ -79,6 +80,7 @@ class Account extends Component {
             paymentInfo = {this.paymentInfo}
             editAccountInfo = {this.editAccountInfo}
             handleChoosePhoto = {this.handleChoosePhoto}
+            id = {this.state.id}
             name = {this.state.name}
             email = {this.state.email}
           />

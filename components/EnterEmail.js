@@ -19,6 +19,7 @@ class EnterEmail extends Component {
     };
 
     continueWithEmail = (email) => {
+      
       fetch(`http://localhost:8080/api/getEmailExists/?email=${email}&type=${this.state.type}`)
       .then(response => response.json())
       .then(responseJson => {
