@@ -32,6 +32,14 @@ module.exports = StyleSheet.create({
     padding: 10,
     paddingBottom: 0
   },
+  serviceContainer: {
+    flex: 6,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "flex-end",
+    backgroundColor: "white",
+    paddingBottom: 10,
+  },
   heading1: {
     fontFamily: "Arial",
     fontSize: 40,
@@ -71,6 +79,17 @@ module.exports = StyleSheet.create({
     color: "rgba(255,255,255,0.7)",
     marginHorizontal: 25
   },
+  input2: {
+    width: WIDTH - 200,
+    height: 40,
+    borderRadius: 25,
+    fontSize: 16,
+    paddingLeft: 45,
+    backgroundColor: "rgba(0,0,0,0.35)",
+    color: "rgba(255,255,255,0.7)",
+    marginHorizontal: 25
+  },
+
   inputIcon: { position: "absolute", top: 8, left: 37 },
   inputContainer: { marginTop: 10 },
   btn: {

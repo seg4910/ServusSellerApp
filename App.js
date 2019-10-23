@@ -39,6 +39,7 @@ import PurchaseService from './components/PurchaseService.js';
 import AuthLoadingScreen from './components/AuthLoadingScreen.js';
 import EditAccountInfo from './components/EditAcountInfo.js';
 import CheckoutServiceLawnMowing from './components/CheckoutServiceLawnMowing.js';
+import CreateService from './components/CreateService.js';
 
 class NavigationDrawerStructure extends Component {
   //Structure for the navigation Drawer
@@ -276,7 +277,18 @@ const AppStack = createStackNavigator({
       },
       headerTintColor: "#000000"
     })
-  },      
+  },
+  CreateService: {
+    screen: CreateService,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },
 });
 
 
@@ -284,13 +296,12 @@ const AppStack = createStackNavigator({
 // switch navigator for swapping between navigation stacks
 const switchNavigator = createSwitchNavigator(
   {
-    //AuthLoading: AuthLoadingScreen,
     App: AppStack,
     Auth: AuthStack,
     AuthLoading: AuthLoadingScreen
   },
   {
-    initialRouteName: "Auth"
+    initialRouteName: "AuthLoading"
   }
 );
 
