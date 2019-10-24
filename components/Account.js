@@ -28,6 +28,7 @@ class Account extends Component {
               name: responseJson.name,
               email: responseJson.email,
               password: responseJson.password,
+              phone: responseJson.phone
             });
           })
           .catch((error) =>{
@@ -83,6 +84,7 @@ class Account extends Component {
             id = {this.state.id}
             name = {this.state.name}
             email = {this.state.email}
+            phone = {this.state.phone}
           />
         );
     }

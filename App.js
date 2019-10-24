@@ -89,7 +89,13 @@ const DrawerNavigatorExample = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: "My Orders"
       }
-    }        
+    },
+    CreateService: {
+      screen: CreateService,
+      navigationOptions: {
+        drawerLabel: "Create Service"
+      }
+    }              
   },
   {
     contentComponent: props => (
@@ -343,6 +349,8 @@ export default class App extends React.Component {
     * Triggered when a particular notification has been received in foreground
     * */
     this.notificationListener = firebase.notifications().onNotification((notification) => {
+        console.log(notification);
+        console.log('orderId : ' + notification.data.orderId);
         const { title, body } = notification;
         this.showAlert(title, body);
     });
@@ -352,6 +360,7 @@ export default class App extends React.Component {
     * */
     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
         const { title, body } = notificationOpen.notification;
+
         this.showAlert(title, body);
     });
   
