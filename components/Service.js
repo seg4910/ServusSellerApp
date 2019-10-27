@@ -22,7 +22,7 @@ class Service extends Component {
         const { navigation } = this.props;
         const id = JSON.parse(JSON.stringify(navigation.getParam('selectedService', 'NO-NAME')));
         AsyncStorage.getItem('userId', (err, result) => {        
-            fetch('http://localhost:8080/api/getServiceInfo?service=' + id)
+            fetch('http://localhost:8080/api/getServiceInfo?id=' + id)
             .then((response) => response.json())
             .then((responseJson) => {
             this.setState({
