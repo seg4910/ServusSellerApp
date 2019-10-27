@@ -19,7 +19,7 @@ class Account extends Component {
     componentDidMount() {
         AsyncStorage.getItem('userId', (err, result) => {
     
-          fetch(`http://localhost:8080/api/getAccountInfo/?account_type=${"sellers"}&id=${result}`)
+          fetch(`http://localhost:8080/api/getAccountInfo/?type=${"sellers"}&id=${result}`)
           .then((response) => response.json())
           .then((responseJson) => {
     

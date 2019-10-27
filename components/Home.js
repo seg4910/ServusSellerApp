@@ -7,9 +7,12 @@ class Home extends Component {
       super(props);
       this.state = {
         sellerOrders: null,
-        peding: [],
+        pending: [],
         upcoming: [],
-        past: []
+        past: [],
+        buyerName: '',
+        buyerPhone: '',
+        buyerEmail: ''
       }
     };
 
@@ -18,8 +21,12 @@ class Home extends Component {
         fetch(`http://localhost:8080/api/getSellerOrders?id=${result}`)
         .then(response => response.json())
         .then(responseJson => {
-            this.setState({sellerOrders: responseJson.orders});
-            //this.categorizeOrders();
+            this.setState({
+              sellerOrders: responseJson.orders,
+            });
+            this.state.pending = this.getRequests('PENDING');
+            this.state.upcoming = this.getRequests('CONFIRMED');
+            this.state.past = this.getRequests('COMPLETED');
         })
         .catch(error => {
             console.error(error);
@@ -27,41 +34,59 @@ class Home extends Component {
       });
     }
 
+    getOrderCard = (order) => {
+      console.log('BUYER NAME: ' + this.state.buyerName);
+      return (
+        <View elevation={2} style={{padding: 20, height:150, margin: 20, marginBottom:5, borderRadius:8, backgroundColor: '#fff',
+        shadowColor:'black',
+        shadowOffset: {
+          width: 0,
+          height: 3
+        },
+        shadowRadius: 5,
+        shadowOpacity: 1.0,
+        elevation: 5,
+        }}>
+          <Text>{order.sellerName} Buyer: {this.state.buyerName}</Text>
+        </View>
+      );
+    }
+    
     getRequests = (status) => {
       if (this.state.sellerOrders) {
         return this.state.sellerOrders.map((order) => {
-          console.log(order.status);
-          if(order.status == status) {
-            return (
-              <View elevation={2} style={{padding: 20, height:150, margin: 20, marginBottom:5, borderRadius:8, backgroundColor: '#fff',
-              shadowColor:'black',
-              shadowOffset: {
-                width: 0,
-                height: 3
-              },
-              shadowRadius: 5,
-              shadowOpacity: 1.0,
-              elevation: 5,
-              }}>
-                <Text >{order.sellerName}</Text>
-              </View>
-            );
-          }
+
+            if(order.status == status) {
+              fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=users`)
+              .then(response => response.json())
+              .then(responseJson => {
+                buyerName = responseJson.name;
+                  this.setState({
+                    buyerName: responseJson.name,
+                    buyerPhone: responseJson.phone,
+                    buyerEmail: responseJson.email
+                  });
+                  console.log(this.state.buyerName);
+              })
+              .catch(error => {
+                  console.error(error);
+              });   
+
+              return this.getOrderCard(order);
+            }
         })
       }
     }
 
-
     render() {
-
         return (
             <ScrollView style={{}}>
               <Text style={{margin:20,marginBottom:10,fontWeight:'bold', fontSize:25}}>Requests</Text>
-              {this.getRequests('PENDING')}
+              {this.state.pending.map((order) => {
+                return order;
+              })}
               <Text style={{margin:20,marginBottom:10,fontWeight:'bold', fontSize:25}}>Upcoming Orders</Text>
-              {this.getRequests('CONFIRMED')}              
               <Text style={{margin:20,marginBottom:10,fontWeight:'bold', fontSize:25}}>Past Orders</Text>
-              {this.getRequests('COMPLETE')}              
 
             </ScrollView> 
         )
