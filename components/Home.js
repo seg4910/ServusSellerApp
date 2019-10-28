@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, AsyncStorage } from "react-native";
+import { View, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
 import HomeView from './views/appViews/HomeView.js';
 import Moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
@@ -60,6 +60,12 @@ class Home extends Component {
       });
     }
 
+    viewOrder(orderId) {
+      this.props.navigation.navigate('Order', {
+        id: orderId
+    });
+    }
+
     getOrders = (status) => {
       if (this.state.sellerOrders) {
         return this.state.sellerOrders.map((order) => {
@@ -75,7 +81,7 @@ class Home extends Component {
               }
 
               return (
-                <View key={order.id} elevation={2} style={{padding: 20, height:150, margin: 20, marginBottom:5, borderRadius:8, backgroundColor: '#fff',
+                <TouchableOpacity onPress={() => this.viewOrder(order.id)}key={order.id} elevation={2} style={{padding: 20, height:150, margin: 20, marginBottom:5, borderRadius:8, backgroundColor: '#fff',
                 shadowColor:'black',
                 shadowOffset: {
                   width: 0,
@@ -114,10 +120,9 @@ class Home extends Component {
                       <Text style={{fontSize:45, fontWeight:'bold', color:'#E88D72'}}>{Moment(order.dateScheduled).format('DD')}</Text>
                       <Text style={{fontSize:20, color: '#E88D72', marginTop:-13}}>{Moment(order.dateScheduled).format('MMMM')}</Text>
                       <Text style={{fontSize:16, color:'#7f8c8d', paddingTop:7}}>{Moment(order.dateScheduled).format('LT')}</Text>
-
                     </View>                   
                   </View>
-                 </View>
+                 </TouchableOpacity>
               );
             }
         })
