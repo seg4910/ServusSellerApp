@@ -42,6 +42,7 @@ import EditAccountInfo from './components/EditAcountInfo.js';
 import CheckoutServiceLawnMowing from './components/CheckoutServiceLawnMowing.js';
 import CreateService from './components/CreateService.js';
 import firebase from 'react-native-firebase';
+import Order from './components/Order.js';
 
 class NavigationDrawerStructure extends Component {
   //Structure for the navigation Drawer
@@ -288,6 +289,17 @@ const AppStack = createStackNavigator({
   },
   CreateService: {
     screen: CreateService,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },
+  Order: {
+    screen: Order,
     navigationOptions: ({ navigation }) => ({
       title: "Servus",
       //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
