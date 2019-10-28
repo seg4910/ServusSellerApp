@@ -12,36 +12,52 @@ class Home extends Component {
         pending: [],
         upcoming: [],
         past: [],
-        buyerName: '',
+        buyerNames: [],
         buyerPhone: '',
         buyerEmail: ''
       }
     };
 
     componentDidMount() {
-      AsyncStorage.getItem('userId', (err, result) => {        
+      function contains(a, obj) {
+        var i = a.length;
+        while (i--) {
+           if (a[i].buyerId === obj.buyerId && a[i].buyerName === obj.buyerName) {
+               return true;
+           }
+        }
+        return false;
+    }
+      AsyncStorage.getItem('userId', (err, result) => {
         fetch(`http://localhost:8080/api/getSellerOrders?id=${result}`)
         .then(response => response.json())
         .then(responseJson => {
             this.setState({
               sellerOrders: responseJson.orders
+            }, () => {
+              this.state.sellerOrders.map((order) => {
+                fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=users`)
+                  .then((response) => response.json())
+                  .then((responseJson) => {
+                    const temporay_name = {
+                      buyerId: responseJson.id,
+                      buyerName: responseJson.name,
+                    }
+                    const newBuyerNames = contains(this.state.buyerNames, temporay_name) ? this.state.buyerNames : this.state.buyerNames.push(temporay_name);
+                    this.setState({
+                      buyernames: newBuyerNames,
+                    })
+                  })
+                  .catch((error) =>{
+                    console.error(error);
+                  });
+              })
             });
           })
         .catch(error => {
             console.error(error);
         });
       });
-    }
-    
-    async getBuyerInfo(buyerId) {
-      try {
-        const response = await fetch(`http://localhost:8080/api/getAccountInfo?id=${buyerId}&type=users`);
-        const buyerInfo = await response.json();
-        return buyerInfo;
-
-      } catch (err) {
-        console.log(err);
-      }
     }
 
     getOrders = (status) => {
@@ -56,12 +72,7 @@ class Home extends Component {
                   duration = '1-2 Hours'
               } else if (order.size == 'LG') {
                   duration = '2-3 Hours'
-              } 
-
-              this.getBuyerInfo(order.buyerId)
-                .then((buyerInfo) => {
-                  console.log(buyerInfo); // this works
-                });
+              }
 
               return (
                 <View key={order.id} elevation={2} style={{padding: 20, height:150, margin: 20, marginBottom:5, borderRadius:8, backgroundColor: '#fff',
@@ -76,7 +87,9 @@ class Home extends Component {
                 }}>
                   <View style={{flexDirection:'row'}}>
                     <View style={{flex:1}}>
-                      <Text style={{fontSize:20}}>{buyerName}</Text>
+                      <Text style={{fontSize:20}}>{
+                        this.state.buyerNames.map((name) => name.buyerId === order.buyerId ? name.buyerName : "")
+                      }</Text>
                       <View style={{paddingTop:10, flexDirection:'row'}}>
                         <Icon2 style={{paddingRight:10, color:'#7f8c8d'}} name="clock-outline" size={25} />
                         <Text style={{fontSize:16}}>{duration}</Text>                        
