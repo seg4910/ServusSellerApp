@@ -23,14 +23,16 @@ class Order extends Component {
         orderInfo: null,
         buyerInfo: null,
         isAccModalVisible: false,
-        isDecModalVisible: false
+        isDecModalVisible: false,
+        orderId: null
     };
   }
 
   componentDidMount() {
     const { navigation } = this.props;
     const orderId = JSON.parse(JSON.stringify(navigation.getParam('id', 'NO-ORDER')));
-    //console.log(orderId);
+    this.setState({orderId: orderId});
+
     fetch('http://localhost:8080/api/viewOrder?id=' + orderId)
     .then((response) => response.json())
     .then((responseJson) => {
@@ -51,17 +53,53 @@ class Order extends Component {
     });
   }
 
-  respondToRequest(resp) {
+  toggleRequestModal(resp) {
       if (resp == 'ACCEPT') {
         // seller accepts the order request
         this.setState({ isAccModalVisible: !this.state.isAccModalVisible });
-
       } else if (resp == 'DECLINE') {
         // seller declines the order request
         this.setState({ isDecModalVisible: !this.state.isDecModalVisible });
-
       }
   }
+
+  respondToRequest(resp) {
+    if (resp == 'ACCEPT') {
+      // seller accepts the order request
+      this.setState({ isAccModalVisible: !this.state.isAccModalVisible });
+
+      fetch('http://localhost:8080/api/respondToRequest?resp=ACCEPTED&id=' + this.state.orderId, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+         },          
+      })
+      .catch((error) =>{
+        console.error(error);
+     });
+
+     this.props.navigation.goBack();
+
+    } else if (resp == 'DECLINE') {
+      // seller declines the order request
+      this.setState({ isDecModalVisible: !this.state.isDecModalVisible });
+
+      fetch('http://localhost:8080/api/respondToRequest?resp=DECLINED&id=' + this.state.orderId, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+         },          
+      })
+      .catch((error) =>{
+        console.error(error);
+     });
+
+     this.props.navigation.goBack();     
+
+    }
+}  
 
   render() {
     const { navigation } = this.props;
@@ -111,30 +149,51 @@ class Order extends Component {
                         <Text style={{fontSize:20}}>Duration: {duration}</Text>
                     </View>
 
+                {this.state.orderInfo[0].status == 'PENDING' && (
+            
                     <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
-                        <TouchableOpacity onPress={() => this.respondToRequest('ACCEPT')} style={{borderRadius:5, backgroundColor:'#2ecc71', flex:1, height:50, margin:10, justifyContent:'center', alignItems:'center'}}>
+                        <TouchableOpacity onPress={() => this.toggleRequestModal('ACCEPT')} style={{borderRadius:5, backgroundColor:'#2ecc71', flex:1, height:50, margin:10, justifyContent:'center', alignItems:'center'}}>
                             <Text style={{fontWeight:'bold'}}>ACCEPT</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.respondToRequest('DECLINE')} style={{borderRadius:5, backgroundColor:'#e74c3c', flex:1, height:50, margin:10, justifyContent:'center', alignItems:'center'}}>
+                        <TouchableOpacity onPress={() => this.toggleRequestModal('DECLINE')} style={{borderRadius:5, backgroundColor:'#e74c3c', flex:1, height:50, margin:10, justifyContent:'center', alignItems:'center'}}>
                             <Text style={{fontWeight:'bold'}}>DECLINE</Text>
                         </TouchableOpacity>
                     </View>
+                )}
+
                 </View>    
             )}
             <Modal isVisible={this.state.isAccModalVisible}>
                 <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                    <View style={{height:200, width: 350, backgroundColor:'#fff', borderRadius:20, padding:30}}>
-                        <Text style={{fontSize:20}}>Are you sure that you would like to accept the offer?</Text>
-                        <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
-                            <TouchableOpacity
-                                style={{flex: 1, backgroundColor:'#E88D72', justifyContent:'center', alignItems:'center', height:45, borderRadius: 25, }}
-                                onPress={() => this.respondToRequest('ACCEPT')}>
-                                <Text style={{textAlign:'center', fontSize:19, fontWeight:'bold', color:'#543855'}}>ACCEPT</Text>
-                            </TouchableOpacity>
+                    <View style={{height:200, width: 350, backgroundColor:'#fff', borderRadius:20, padding:10}}>
+                        <Icon2 onPress={() => this.toggleRequestModal('ACCEPT')} style={{alignSelf:'flex-end', paddingRight:10, color:'#7f8c8d'}} name="close" size={30} />
+                        <View style={{flex:1, flexDirection:'column', padding:10}}>
+                            <Text style={{fontSize:20}}>Are you sure that you would like to accept the offer?</Text>
+                            <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
+                                <TouchableOpacity
+                                    style={{flex: 1, backgroundColor:'#E88D72', justifyContent:'center', alignItems:'center', height:45, borderRadius: 25, }}
+                                    onPress={() => this.respondToRequest('ACCEPT')}>
+                                    <Text style={{textAlign:'center', fontSize:19, fontWeight:'bold', color:'#543855'}}>ACCEPT</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
             </Modal>
+            <Modal isVisible={this.state.isDecModalVisible}>
+                <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{height:200, width: 350, backgroundColor:'#fff', borderRadius:20, padding:30}}>
+                        <Text style={{fontSize:20}}>Are you sure that you would like to decline the offer?</Text>
+                        <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
+                            <TouchableOpacity
+                                style={{flex: 1, backgroundColor:'#E88D72', justifyContent:'center', alignItems:'center', height:45, borderRadius: 25, }}
+                                onPress={() => this.respondToRequest('DECLINE')}>
+                                <Text style={{textAlign:'center', fontSize:19, fontWeight:'bold', color:'#543855'}}>DECLINE</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>            
         </View>
     )
   }

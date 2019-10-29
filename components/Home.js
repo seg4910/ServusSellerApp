@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, AsyncStorage, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, AsyncStorage, TouchableOpacity, RefreshControl } from "react-native";
 import HomeView from './views/appViews/HomeView.js';
 import Moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
@@ -14,11 +14,21 @@ class Home extends Component {
         past: [],
         buyerNames: [],
         buyerPhone: '',
-        buyerEmail: ''
+        buyerEmail: '',
+        refreshing: false
       }
     };
 
     componentDidMount() {
+      this.retrieveOrderInfo();
+    }
+
+    // maybe we can listen for navigation 'goBack' and automatically update?
+    _onRefresh = () => {
+      this.retrieveOrderInfo();
+    }
+
+    retrieveOrderInfo = () => {
       function contains(a, obj) {
         var i = a.length;
         while (i--) {
@@ -27,7 +37,7 @@ class Home extends Component {
            }
         }
         return false;
-    }
+      }
       AsyncStorage.getItem('userId', (err, result) => {
         fetch(`http://localhost:8080/api/getSellerOrders?id=${result}`)
         .then(response => response.json())
@@ -63,7 +73,7 @@ class Home extends Component {
     viewOrder(orderId) {
       this.props.navigation.navigate('Order', {
         id: orderId
-    });
+      });
     }
 
     getOrders = (status) => {
@@ -108,11 +118,11 @@ class Home extends Component {
                       {order.status=='PENDING' && (
                           <Text style={{marginTop:10,fontSize:16, color:'grey', paddingBottom:5}}>{order.status}</Text>  
                       )}
-                      {order.status=='CONFIRMED' && (
+                      {order.status=='ACCEPTED' && (
                           <Text style={{marginTop:10,fontSize:16, color:'green', paddingBottom:5}}>{order.status}</Text>  
                       )}  
                       {order.status=='COMPLETE' && (
-                          <Text style={{marginTop:10,fontSize:16, color:'black', paddingBottom:5}}>{order.status}</Text>  
+                          <Text style={{marginTop:10,fontSize:16, color:'green', paddingBottom:5}}>{order.status}</Text>  
                       )}   
 
                     </View>
@@ -131,11 +141,16 @@ class Home extends Component {
 
     render() {
         return (
-            <ScrollView style={{}}>
+            <ScrollView style={{}} refreshControl={
+              <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />}
+            >
               <Text style={{margin:20,marginBottom:10,fontWeight:'bold', fontSize:25}}>Requests</Text>
               {this.getOrders('PENDING')}
               <Text style={{margin:20,marginBottom:10,fontWeight:'bold', fontSize:25}}>Upcoming Orders</Text>
-              {this.getOrders('CONFIRMED')}
+              {this.getOrders('ACCEPTED')}
               <Text style={{margin:20,marginBottom:10,fontWeight:'bold', fontSize:25}}>Past Orders</Text>
               {this.getOrders('COMPLETE')}
 
