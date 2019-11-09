@@ -24,6 +24,7 @@ class Order extends Component {
         buyerInfo: null,
         isAccModalVisible: false,
         isDecModalVisible: false,
+        isCancelModalVisible: false,
         orderId: null
     };
   }
@@ -60,6 +61,8 @@ class Order extends Component {
       } else if (resp == 'DECLINE') {
         // seller declines the order request
         this.setState({ isDecModalVisible: !this.state.isDecModalVisible });
+      } else if (resp == 'CANCEL') {
+        this.setState({ isCancelModalVisible : !this.state.isCancelModalVisible});
       }
   }
 
@@ -98,13 +101,30 @@ class Order extends Component {
 
      this.props.navigation.goBack();     
 
+    } else if (resp == 'CANCEL') {
+       
+        this.setState({ isCancelModalVisible: !this.state.isCancelModalVisible });
+         
+        fetch('http://localhost:8080/api/respondToRequest?resp=CANCELLED&id=' + this.state.orderId, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+           },          
+        })
+        .catch((error) =>{
+          console.error(error);
+       });
+       
+       this.props.navigation.goBack();
+
     }
 }  
 
   render() {
     const { navigation } = this.props;
     
-    if(this.state.orderInfo) {
+    if (this.state.orderInfo) {
         if (this.state.orderInfo[0].size == 'SM') {
             duration = '0 - 1 Hours'
         } else if (this.state.orderInfo[0].size == 'MD') {
@@ -150,7 +170,6 @@ class Order extends Component {
                     </View>
 
                 {this.state.orderInfo[0].status == 'PENDING' && (
-            
                     <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
                         <TouchableOpacity onPress={() => this.toggleRequestModal('ACCEPT')} style={{borderRadius:5, backgroundColor:'#2ecc71', flex:1, height:50, margin:10, justifyContent:'center', alignItems:'center'}}>
                             <Text style={{fontWeight:'bold'}}>ACCEPT</Text>
@@ -161,8 +180,37 @@ class Order extends Component {
                     </View>
                 )}
 
+                {this.state.orderInfo[0].status == 'ACCEPTED' && (
+                    <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
+                        <TouchableOpacity onPress={() => this.toggleRequestModal('CANCEL')} style={{borderRadius:5, backgroundColor:'#e74c3c', flex:1, height:50, margin:10, justifyContent:'center', alignItems:'center'}}>
+                            <Text style={{fontWeight:'bold'}}>CANCEL</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                
+
                 </View>    
             )}
+
+
+            <Modal isVisible={this.state.isCancelModalVisible}>
+                <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{height:200, width: 350, backgroundColor:'#fff', borderRadius:20, padding:10}}>
+                        <Icon2 onPress={() => this.toggleRequestModal('CANCEL')} style={{alignSelf:'flex-end', paddingRight:10, color:'#7f8c8d'}} name="close" size={30} />
+                        <View style={{flex:1, flexDirection:'column', padding:10}}>
+                            <Text style={{fontSize:20}}>Are you sure that you would like to cancel this service?</Text>
+                            <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
+                                <TouchableOpacity
+                                    style={{flex: 1, backgroundColor:'#E88D72', justifyContent:'center', alignItems:'center', height:45, borderRadius: 25, }}
+                                    onPress={() => this.respondToRequest('CANCEL')}>
+                                    <Text style={{textAlign:'center', fontSize:19, fontWeight:'bold', color:'#543855'}}>CANCEL</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
             <Modal isVisible={this.state.isAccModalVisible}>
                 <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                     <View style={{height:200, width: 350, backgroundColor:'#fff', borderRadius:20, padding:10}}>
@@ -183,6 +231,7 @@ class Order extends Component {
             <Modal isVisible={this.state.isDecModalVisible}>
                 <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
                     <View style={{height:200, width: 350, backgroundColor:'#fff', borderRadius:20, padding:30}}>
+                        <Icon2 onPress={() => this.toggleRequestModal('DECLINE')} style={{alignSelf:'flex-end', paddingRight:10, color:'#7f8c8d'}} name="close" size={30} />
                         <Text style={{fontSize:20}}>Are you sure that you would like to decline the offer?</Text>
                         <View style={{flex:1, flexDirection:'row', alignItems:'flex-end'}}>
                             <TouchableOpacity
@@ -193,7 +242,9 @@ class Order extends Component {
                         </View>
                     </View>
                 </View>
-            </Modal>            
+            </Modal>     
+
+
         </View>
     )
   }
