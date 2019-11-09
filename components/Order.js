@@ -139,7 +139,19 @@ class Order extends Component {
             {this.state.buyerInfo && (
                 <View style={{flex:1, padding: 20}}>     
                     <View style={{marginBottom:40,padding:10, borderBottomColor:'#dfe6e9', borderBottomWidth:2}}>       
-                        <Text style={{fontSize:25, fontWeight:'bold'}}>Order Request</Text>
+                       
+                        {this.state.orderInfo[0].status=='PENDING' && (
+                            <Text style={{fontSize:25, fontWeight:'bold'}}>Order Request</Text>
+                        )}
+
+                        {this.state.orderInfo[0].status=='ACCEPTED' && (
+                            <Text style={{fontSize:25, fontWeight:'bold'}}>Upcoming Order</Text>
+                        )}
+
+                        {this.state.orderInfo[0].status=='COMPLETE' && (
+                            <Text style={{fontSize:25, fontWeight:'bold'}}>Completed Service</Text>
+                        )}
+
                     </View> 
 
                     <View style={{paddingBottom: 25, borderBottomColor:'#dfe6e9', borderBottomWidth:2}}>
