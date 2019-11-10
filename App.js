@@ -43,6 +43,7 @@ import CheckoutServiceLawnMowing from './components/CheckoutServiceLawnMowing.js
 import CreateService from './components/CreateService.js';
 import firebase from 'react-native-firebase';
 import Order from './components/Order.js';
+import ChangePassword from './components/ChangePassword.js';
 
 class NavigationDrawerStructure extends Component {
   //Structure for the navigation Drawer
@@ -309,6 +310,17 @@ const AppStack = createStackNavigator({
       headerTintColor: "#000000"
     })
   },
+  ChangePassword: {
+    screen: ChangePassword,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },  
 });
 
 
