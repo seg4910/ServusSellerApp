@@ -22,6 +22,10 @@ class AccountView extends Component {
       this.props.navigation.navigate("EditAccountInfo");   
     }
 
+    changePassword = () => {
+      this.props.navigation.navigate("ChangePassword");   
+    }    
+
   render() {
 
     const { photo } = this.state;
@@ -45,7 +49,7 @@ class AccountView extends Component {
 
           <TouchableOpacity
                   style={{borderBottomWidth:1,borderBottomColor:'#dfe6e9',padding:20, flexDirection:'row'}}
-                  onPress={() => this.editAccountInfo()}>
+                  onPress={() => this.changePassword()}>
                   <View style={{flexDirection:'row', flex:1, marginLeft:17}}>
                     <Icon style={{alignSelf:'center'}} name="unlock-alt" size={23} />                  
                     <Text style={{fontSize:20,paddingLeft:20}}>Change Password</Text>
