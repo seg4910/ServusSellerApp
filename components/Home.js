@@ -45,7 +45,7 @@ class Home extends Component {
             this.setState({
               sellerOrders: responseJson.orders
             }, () => {
-              this.state.sellerOrders.map((order) => {
+              this.state.sellerOrders && this.state.sellerOrders.map((order) => {
                 fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=users`)
                   .then((response) => response.json())
                   .then((responseJson) => {
