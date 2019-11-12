@@ -23,7 +23,7 @@ class Register extends Component {
 
   createAccount = (email, name, password) => {
     fetch(
-      `http://localhost:8080/api/createAccount/?email=${email}&name=${name}&password=${password}&type=${this.state.type}`
+      `http://localhost:8080/api/createAccount/?email=${email}&name=${name}&password=${password}&type=sellers`
     )
       .then(response => response.json())
       .then(responseJson => {
