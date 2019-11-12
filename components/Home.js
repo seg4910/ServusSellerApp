@@ -3,6 +3,7 @@ import { View, Text, ScrollView, AsyncStorage, TouchableOpacity, RefreshControl 
 import HomeView from './views/appViews/HomeView.js';
 import Moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
+import firebase from 'react-native-firebase';
 
 class Home extends Component {
   constructor(props) {
@@ -20,6 +21,35 @@ class Home extends Component {
   };
 
   componentDidMount() {
+
+    // always update the users fcm token to the current device that they are using
+    firebase.messaging().hasPermission()
+      .then(enabled => {
+        if (enabled) {
+          firebase.messaging().getToken().then(token => {
+            console.log("LOG: ", token);
+
+            AsyncStorage.getItem('userId', (err, result) => {
+              fetch('http://localhost:8080/api/editField', {
+                method: 'POST',
+                headers: {
+                   Accept: 'application/json',
+                   'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                   type: "sellers",
+                   userId: result,
+                   fieldType: "fcmToken",
+                   fieldValue: token,
+                }),
+               });
+            });
+
+
+          })
+        }
+      });
+
     this.retrieveOrderInfo();
   }
 
@@ -80,7 +110,7 @@ class Home extends Component {
   getOrders = (status) => {
     if (this.state.sellerOrders) {
       const currentTime = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-  
+
       return this.state.sellerOrders.map((order) => {
 
         var timeUntilOrderStart = Moment(currentTime).diff(order.dateScheduled, 'minutes');
@@ -141,7 +171,7 @@ class Home extends Component {
             </TouchableOpacity>
           );
 
-        } 
+        }
       })
     }
   }
@@ -152,59 +182,58 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.state.sellerOrders);
     if (this.state.sellerOrders) {
-        return (
-            <ScrollView refreshControl={
-                <RefreshControl
-                    refreshing={this.state.refreshing}
-                    onRefresh={this._onRefresh}
-                />
-            }>
-                {this.state.sellerOrders && (
-                    <ScrollView style={{marginBottom: 30}}>
+      return (
+        <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }>
+          {this.state.sellerOrders && (
+            <ScrollView style={{ marginBottom: 30 }}>
 
-                        {!this.getOrders('ACTIVE').every(this.isUndefined) && (
-                            <View style={{backgroundColor: '#E88D72', paddingBottom:20}}>
-                              <Text style={{ margin: 20, marginBottom: 5, fontWeight: 'bold', fontSize: 25 }}>Active</Text>
-                              {this.getOrders('ACTIVE')}
-                            </View>    
-                          
-                        )}
-
-                        <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Upcoming Orders</Text>
-                        {this.getOrders('ACCEPTED')}
-                        {this.getOrders('ACCEPTED').every(this.isUndefined) && (
-                            <Text style={{ marginLeft: 40 }}>You have no upcoming orders</Text>)}
-                        
-                        <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Requests</Text>
-                        {this.getOrders('PENDING')}
-                        {this.getOrders('PENDING').every(this.isUndefined) && (
-                            <Text style={{ marginLeft: 40 }}>You have no order requests</Text>)}
-
-                        <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Past Orders</Text>
-                        {this.getOrders('COMPLETE')}
-                        {this.getOrders('COMPLETE').every(this.isUndefined) && (
-                            <Text style={{ marginLeft: 40 }}>You have no previous orders</Text>)}
-                    </ScrollView>
-                )}
-            </ScrollView>
-        )
-    } else {
-        return (
-            <ScrollView contentContainerStyle={{ flex: 1 }} refreshControl={
-                <RefreshControl
-                    refreshing={this.state.refreshing}
-                    onRefresh={this._onRefresh}
-                />
-            }>
-                <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 150 }}>
-                    <Icon2 style={{ alignSelf: 'center', color: '#E88D72' }} name="file-alert-outline" size={100} />
-                    <Text style={{ fontSize: 22, paddingTop: 15 }}>NO ORDERS</Text>
-                    <Text style={{ fontSize: 16, paddingTop: 10 }}>You don't have any orders in your history</Text>
+              {!this.getOrders('ACTIVE').every(this.isUndefined) && (
+                <View style={{ backgroundColor: '#E88D72', paddingBottom: 20 }}>
+                  <Text style={{ margin: 20, marginBottom: 5, fontWeight: 'bold', fontSize: 25 }}>Active</Text>
+                  {this.getOrders('ACTIVE')}
                 </View>
+
+              )}
+
+              <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Upcoming Orders</Text>
+              {this.getOrders('ACCEPTED')}
+              {this.getOrders('ACCEPTED').every(this.isUndefined) && (
+                <Text style={{ marginLeft: 40 }}>You have no upcoming orders</Text>)}
+
+              <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Requests</Text>
+              {this.getOrders('PENDING')}
+              {this.getOrders('PENDING').every(this.isUndefined) && (
+                <Text style={{ marginLeft: 40 }}>You have no order requests</Text>)}
+
+              <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Past Orders</Text>
+              {this.getOrders('COMPLETE')}
+              {this.getOrders('COMPLETE').every(this.isUndefined) && (
+                <Text style={{ marginLeft: 40 }}>You have no previous orders</Text>)}
             </ScrollView>
-        )
+          )}
+        </ScrollView>
+      )
+    } else {
+      return (
+        <ScrollView contentContainerStyle={{ flex: 1 }} refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }>
+          <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 150 }}>
+            <Icon2 style={{ alignSelf: 'center', color: '#E88D72' }} name="file-alert-outline" size={100} />
+            <Text style={{ fontSize: 22, paddingTop: 15 }}>NO ORDERS</Text>
+            <Text style={{ fontSize: 16, paddingTop: 10 }}>You don't have any orders in your history</Text>
+          </View>
+        </ScrollView>
+      )
     }
   }
 }
