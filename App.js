@@ -86,12 +86,6 @@ const DrawerNavigatorExample = createDrawerNavigator(
         drawerLabel: "My Account"
       }
     },
-    ViewOrders: {
-      screen: ViewOrders,
-      navigationOptions: {
-        drawerLabel: "My Orders"
-      }
-    },
     CreateService: {
       screen: CreateService,
       navigationOptions: {

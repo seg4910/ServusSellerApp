@@ -15,6 +15,21 @@ import Modal from "react-native-modal";
 
 const fetch = require("node-fetch");
 
+// notification payloads
+const acceptTitle = "Order Accepted!";
+const acceptBody = "Your order has been accepted and is now confirmed";
+
+const declineTitle = "Order Declined";
+const declineBody = "Your order has been declined. Try a different time or seller";
+
+const cancelTitle = "Order Cancelled";
+const cancelBody = "The seller has cancelled your order";
+
+const beginTitle = "Order started!";
+const beginBody = "The seller has checked in and begun your order";
+
+const completeTitle = "Order complete!";
+const completeBody = "The seller has completed your order. Please review."
 
 class Order extends Component {
     constructor(props) {
@@ -79,11 +94,53 @@ class Order extends Component {
         }
     }
 
+    sendNotificationToBuyer = (title, body) => {
+        //select buyer fcm token from db
+        //send notification to buyer
+
+        console.log("sending notification");
+
+        fetch(`https://fcm.googleapis.com/fcm/send`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'key=AAAAHyv-GIg:APA91bFcrY4DEMCl5SyfH4V8kjehp20BVYo7Ly5CQj5D5IJUSEQ6TKOl0cvlywN5wFdxgXBCTfCkxrR0z0iBCyhrdMnjYurwcAyu2MJU5Eq-BuX7gHojKCMb1TsQlJIYfx8_oDI5YND5'
+            },
+            body: JSON.stringify({
+                "to": this.state.buyerInfo.fcmToken,
+                "notification": {
+                    "body": body,
+                    "title": title,
+                    "content_available": true,
+                    "priority": "high"
+                },
+                "data": {
+                    "body": body,
+                    "title": title,
+                    "orderId": "yeet",
+                    "content_available": true,
+                    "priority": "high"
+                }
+            })
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                console.log('here');
+                console.log(responseJson);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     // cancel, accept or decline an order
+    // move all this into one statement using params, no need to repeat
     updateOrderStatus(resp) {
         if (resp == 'ACCEPT') {
             // seller accepts the order request
             this.setState({ isAccModalVisible: !this.state.isAccModalVisible });
+
+            console.log(this.state.buyerInfo.fcmToken);
 
             fetch('http://localhost:8080/api/respondToRequest?resp=ACCEPTED&id=' + this.state.orderId, {
                 method: 'POST',
@@ -96,6 +153,7 @@ class Order extends Component {
                     console.error(error);
                 });
 
+            this.sendNotificationToBuyer(acceptTitle, acceptBody);
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
 
@@ -114,6 +172,7 @@ class Order extends Component {
                     console.error(error);
                 });
 
+            this.sendNotificationToBuyer(declineTitle, declineBody);
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
 
@@ -132,6 +191,7 @@ class Order extends Component {
                     console.error(error);
                 });
 
+            this.sendNotificationToBuyer(cancelTitle, cancelBody);
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
 
@@ -150,6 +210,7 @@ class Order extends Component {
                     console.error(error);
                 });
 
+            this.sendNotificationToBuyer(beginTitle, beginBody);
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
 
@@ -168,6 +229,7 @@ class Order extends Component {
                     console.error(error);
                 });
 
+            this.sendNotificationToBuyer(completeTitle, completeBody);
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
 
