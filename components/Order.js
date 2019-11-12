@@ -89,7 +89,7 @@ class Order extends Component {
             this.setState({ isCancelModalVisible: !this.state.isCancelModalVisible });
         } else if (resp == 'BEGIN') {
             this.setState({ isBeginServiceModalVisible: !this.state.isBeginServiceModalVisible });
-        } else if (resp == 'COMPLETE') {
+        } else if (resp == 'COMPLETEP') {
             this.setState({ isCompleteServiceModalVisible: !this.state.isCompleteServiceModalVisible });
         }
     }
@@ -210,15 +210,7 @@ class Order extends Component {
                     console.error(error);
                 });
 
-            this.sendNotificationToBuyer(beginTitle, beginBody);
-            this.props.navigation.state.params.onGoBack();
-            this.props.navigation.goBack();
-
-        } else if (resp == 'COMPLETE') {
-
-            this.setState({ isCompleteServiceModalVisible: !this.state.isCompleteServiceModalVisible });
-
-            fetch('http://localhost:8080/api/respondToRequest?resp=COMPLETE&id=' + this.state.orderId, {
+            fetch('http://localhost:8080/api/startstopService?&action=timeStarted&id=' + this.state.orderId, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -229,6 +221,37 @@ class Order extends Component {
                     console.error(error);
                 });
 
+
+            this.sendNotificationToBuyer(beginTitle, beginBody);
+            this.props.navigation.state.params.onGoBack();
+            this.props.navigation.goBack();
+
+        } else if (resp == 'COMPLETEP') {
+
+            this.setState({ isCompleteServiceModalVisible: !this.state.isCompleteServiceModalVisible });
+
+            fetch('http://localhost:8080/api/respondToRequest?resp=COMPLETEP&id=' + this.state.orderId, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+            fetch('http://localhost:8080/api/startstopService?&action=timeCompleted&id=' + this.state.orderId, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
+                .catch((error) => {
+                    console.error(error);
+                });
+        
             this.sendNotificationToBuyer(completeTitle, completeBody);
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
@@ -269,6 +292,10 @@ class Order extends Component {
 
                             {this.state.orderInfo[0].status == 'COMPLETE' && (
                                 <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Completed Service</Text>
+                            )}
+
+                            {this.state.orderInfo[0].status == 'COMPLETEP' && (
+                                <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Pending Completion</Text>
                             )}
 
                             {this.state.orderInfo[0].status == 'ACTIVE' && (
@@ -333,7 +360,7 @@ class Order extends Component {
 
                         {this.state.orderInfo[0].status == 'ACTIVE' && this.state.orderActive == true && (
                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity onPress={() => this.toggleRequestModal('COMPLETE')} style={{ borderRadius: 5, backgroundColor: '#E88D72', flex: 1, height: 50, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
+                                <TouchableOpacity onPress={() => this.toggleRequestModal('COMPLETEP')} style={{ borderRadius: 5, backgroundColor: '#E88D72', flex: 1, height: 50, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={{ fontWeight: 'bold' }}>COMPLETED</Text>
                                 </TouchableOpacity>
                             </View>
@@ -412,12 +439,12 @@ class Order extends Component {
                 <Modal isVisible={this.state.isCompleteServiceModalVisible}>
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                         <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20, padding: 30 }}>
-                            <Icon2 onPress={() => this.toggleRequestModal('COMPLETE')} style={{ alignSelf: 'flex-end', paddingRight: 10, color: '#7f8c8d' }} name="close" size={30} />
+                            <Icon2 onPress={() => this.toggleRequestModal('COMPLETEP')} style={{ alignSelf: 'flex-end', paddingRight: 10, color: '#7f8c8d' }} name="close" size={30} />
                             <Text style={{ fontSize: 20 }}>Please confirm the service is complete</Text>
                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
                                 <TouchableOpacity
                                     style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 45, borderRadius: 25, }}
-                                    onPress={() => this.updateOrderStatus('COMPLETE')}>
+                                    onPress={() => this.updateOrderStatus('COMPLETEP')}>
                                     <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#543855' }}>Complete</Text>
                                 </TouchableOpacity>
                             </View>
