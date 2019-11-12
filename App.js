@@ -16,7 +16,8 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import {
   createSwitchNavigator,
@@ -44,6 +45,8 @@ import CreateService from './components/CreateService.js';
 import firebase from 'react-native-firebase';
 import Order from './components/Order.js';
 import ChangePassword from './components/ChangePassword.js';
+import PaymentInfo from './components/PaymentInfo.js';
+import AddNewCard from './components/AddNewCard.js';
 
 class NavigationDrawerStructure extends Component {
   //Structure for the navigation Drawer
@@ -51,9 +54,12 @@ class NavigationDrawerStructure extends Component {
     this.props.navigationProps.toggleDrawer();
   };
 
-  signOut = () => {
+/*   signOut = () => {
+    AsyncStorage.removeItem('userId');
+    console.log('id: ' + AsyncStorage.getItem('userId'));
+    console.log('wtf');
     this.props.navigationProps.navigate("Auth");
-  };
+  }; */
 
   render() {
     return (
@@ -127,6 +133,7 @@ const DrawerNavigatorExample = createDrawerNavigator(
             style={st.btnSignOut}
             onPress={async () => {
               try {
+                AsyncStorage.removeItem('userId');                
                 NavigationService.navigate("Auth");
               } catch (error) {
                 console.log(error);
@@ -306,6 +313,28 @@ const AppStack = createStackNavigator({
   },
   ChangePassword: {
     screen: ChangePassword,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },  
+  PaymentInfo: {
+    screen: PaymentInfo,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },   
+  AddNewCard: {
+    screen: AddNewCard,
     navigationOptions: ({ navigation }) => ({
       title: "Servus",
       //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,

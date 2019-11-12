@@ -59,28 +59,6 @@ class CreateServiceView extends Component {
           />
         </View>
         <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Min. Price ($): </Text>
-          <TextInput
-            style={st.input2}
-            type="number"
-            placeholder="20"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
-            onChangeText={num => this.setState({ minPrice: num })}
-            underlineColorAndroid="transparent"
-          />
-        </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Max Price ($): </Text>
-          <TextInput
-            style={st.input2}
-            type="number"
-            placeholder="300"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
-            onChangeText={num => this.setState({ maxPrice: num })}
-            underlineColorAndroid="transparent"
-          />
-        </View>
-        <View style={st.serviceContainer}>
           <Text style={st.heading2}>Price/hr ($): </Text>
           <TextInput
             style={st.input2}
