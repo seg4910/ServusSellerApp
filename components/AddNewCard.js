@@ -69,7 +69,7 @@ class AddNewCard extends Component {
        {/* <CreditCardInput onChange={this._onChange} />  */}
 
        <StripeAddCard
-        publicStripeKey="sk_test_fTlfHnvlI6jfS34mU7Prokqq00X4ultmWL"
+        publicStripeKey="pk_test_EFdJNe23DMGhrQXGDpPA2kVh00JnUm03oR"
         addCardTokenHandler={(stripeCardToken) => {
           //alert(JSON.stringify(stripeCardToken));
           AsyncStorage.getItem("userId", (err, result) => {

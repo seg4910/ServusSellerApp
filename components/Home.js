@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, AsyncStorage, TouchableOpacity, RefreshControl } from "react-native";
+import { View, Text, ScrollView, AsyncStorage, TouchableOpacity, RefreshControl, Dimensions } from "react-native";
 import HomeView from './views/appViews/HomeView.js';
 import Moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 import firebase from 'react-native-firebase';
+
+const WIDTH = Math.round(Dimensions.get("window").width);
 
 class Home extends Component {
   constructor(props) {
@@ -33,16 +35,16 @@ class Home extends Component {
               fetch('http://localhost:8080/api/editField', {
                 method: 'POST',
                 headers: {
-                   Accept: 'application/json',
-                   'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                   type: "sellers",
-                   userId: result,
-                   fieldType: "fcmToken",
-                   fieldValue: token,
+                  type: "sellers",
+                  userId: result,
+                  fieldType: "fcmToken",
+                  fieldValue: token,
                 }),
-               });
+              });
             });
 
 
@@ -76,7 +78,7 @@ class Home extends Component {
             sellerOrders: responseJson.orders
           }, () => {
             this.state.sellerOrders && this.state.sellerOrders.map((order) => {
-              fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=users`)
+              fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=sellers`)
                 .then((response) => response.json())
                 .then((responseJson) => {
                   const temporay_name = {
@@ -160,6 +162,9 @@ class Home extends Component {
                   {order.status == 'COMPLETE' && (
                     <Text style={{ marginTop: 10, fontSize: 16, color: 'green', paddingBottom: 5 }}>{order.status}</Text>
                   )}
+                  {order.status == 'COMPLETEP' && (
+                    <Text style={{ marginTop: 10, fontSize: 16, color: 'green', paddingBottom: 5 }}>COMPLETE</Text>
+                  )}                  
 
                 </View>
                 <View style={{ alignItems: 'center' }}>
@@ -183,6 +188,12 @@ class Home extends Component {
 
   render() {
     if (this.state.sellerOrders) {
+
+      var checkCompletep = !this.getOrders('COMPLETEP').every(this.isUndefined);
+      var checkActive = !this.getOrders('ACTIVE').every(this.isUndefined);
+      var checkActiveOrCompletep = checkCompletep || checkActive;
+      const { width: WIDTH } = Dimensions.get("window");
+
       return (
         <ScrollView refreshControl={
           <RefreshControl
@@ -193,13 +204,30 @@ class Home extends Component {
           {this.state.sellerOrders && (
             <ScrollView style={{ marginBottom: 30 }}>
 
+            {checkActiveOrCompletep && (
+            <View style={{ backgroundColor: '#E88D72', paddingBottom:40, shadowColor: 'black',
+            shadowOffset: {
+              width: 0,
+              height: 3
+            },
+            shadowRadius: 5,
+            shadowOpacity: 1.0,
+            elevation: 5,}}>
+              {!this.getOrders('COMPLETEP').every(this.isUndefined) && (
+                <View>
+                  <Text style={{ margin: 20, marginBottom: 0, fontWeight: 'bold', fontSize: 25 }}>Pending Completion</Text>
+                  {this.getOrders('COMPLETEP')}
+                </View>
+              )}
               {!this.getOrders('ACTIVE').every(this.isUndefined) && (
-                <View style={{ backgroundColor: '#E88D72', paddingBottom: 20 }}>
-                  <Text style={{ margin: 20, marginBottom: 5, fontWeight: 'bold', fontSize: 25 }}>Active</Text>
+                <View>
+                  <Text style={{ margin: 20, marginBottom: 0, fontWeight: 'bold', fontSize: 25 }}>Active</Text>
                   {this.getOrders('ACTIVE')}
                 </View>
-
               )}
+              </View>                         
+           )}
+
 
               <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Upcoming Orders</Text>
               {this.getOrders('ACCEPTED')}
