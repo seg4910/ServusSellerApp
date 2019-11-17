@@ -227,7 +227,7 @@ class Home extends Component {
             elevation: 5,
 
           }}>
-            {!this.get('COMPLETEP').every(this.isUndefined) && (
+            {!this.getOrders('COMPLETEP').every(this.isUndefined) && (
               <View>
                 <Text style={{ margin: 20, marginBottom: 0, fontWeight: 'bold', fontSize: 25 }}>Pending Completion</Text>
                 {this.getOrders('COMPLETEP')}
