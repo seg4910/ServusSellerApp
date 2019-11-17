@@ -4,6 +4,8 @@ import HomeView from './views/appViews/HomeView.js';
 import Moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 import firebase from 'react-native-firebase';
+import LottieView from 'lottie-react-native';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 const WIDTH = Math.round(Dimensions.get("window").width);
 
@@ -11,19 +13,24 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sellerOrders: null,
+      sellerOrders: undefined,
       pending: [],
       upcoming: [],
       past: [],
       buyerNames: [],
       buyerPhone: '',
       buyerEmail: '',
-      refreshing: false
+      refreshing: false,
+      routes: [
+        { key: 'first', title: 'Accepted' },
+        { key: 'second', title: 'Pending' },
+        { key: 'third', title: 'Completed' }
+      ],
+      index: 0,
     }
   };
 
   componentDidMount() {
-
     // always update the users fcm token to the current device that they are using
     firebase.messaging().hasPermission()
       .then(enabled => {
@@ -57,7 +64,9 @@ class Home extends Component {
 
   // maybe we can listen for navigation 'goBack' and automatically update?
   _onRefresh = () => {
+    this.setState({ refreshing: true });
     this.retrieveOrderInfo();
+    this.setState({ refreshing: false });
   }
 
   retrieveOrderInfo = () => {
@@ -111,12 +120,12 @@ class Home extends Component {
 
   getOrders = (status) => {
     if (this.state.sellerOrders) {
+
       const currentTime = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
       return this.state.sellerOrders.map((order) => {
 
         var timeUntilOrderStart = Moment(currentTime).diff(order.dateScheduled, 'minutes');
-        //console.log(timeUntilOrderStart);  
 
         if (order.size == 'SM') {
           duration = '0-1 Hours'
@@ -164,7 +173,7 @@ class Home extends Component {
                   )}
                   {order.status == 'COMPLETEP' && (
                     <Text style={{ marginTop: 10, fontSize: 16, color: 'green', paddingBottom: 5 }}>COMPLETE</Text>
-                  )}                  
+                  )}
 
                 </View>
                 <View style={{ alignItems: 'center' }}>
@@ -178,6 +187,8 @@ class Home extends Component {
 
         }
       })
+    } else if (this.state.sellerOrders==null) {
+      return [];
     }
   }
 
@@ -186,67 +197,59 @@ class Home extends Component {
     return currentIndex == undefined;
   }
 
-  render() {
-    if (this.state.sellerOrders) {
 
-      var checkCompletep = !this.getOrders('COMPLETEP').every(this.isUndefined);
-      var checkActive = !this.getOrders('ACTIVE').every(this.isUndefined);
-      var checkActiveOrCompletep = checkCompletep || checkActive;
-      const { width: WIDTH } = Dimensions.get("window");
+  getAccepted = () => {
 
-      return (
-        <ScrollView refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh}
-          />
-        }>
-          {this.state.sellerOrders && (
-            <ScrollView style={{ marginBottom: 30 }}>
+    var checkCompletep = !this.getOrders('COMPLETEP').every(this.isUndefined);
+    var checkActive = !this.getOrders('ACTIVE').every(this.isUndefined);
+    var checkAccepted = !this.getOrders('ACCEPTED').every(this.isUndefined);
+    var checkActiveOrCompletep = checkCompletep || checkActive;
+    var checkAnyAccepted = checkCompletep || checkActive || checkAccepted;
 
-            {checkActiveOrCompletep && (
-            <View style={{ backgroundColor: '#E88D72', paddingBottom:40, shadowColor: 'black',
+
+    if (checkAnyAccepted) {
+      return (<ScrollView refreshControl={
+        <RefreshControl
+          refreshing={this.state.refreshing}
+          onRefresh={this._onRefresh}
+        />
+      }>
+
+        {checkActiveOrCompletep && (
+          <View style={{
+            paddingBottom: 40, shadowColor: 'black',
             shadowOffset: {
               width: 0,
               height: 3
             },
             shadowRadius: 5,
             shadowOpacity: 1.0,
-            elevation: 5,}}>
-              {!this.getOrders('COMPLETEP').every(this.isUndefined) && (
-                <View>
-                  <Text style={{ margin: 20, marginBottom: 0, fontWeight: 'bold', fontSize: 25 }}>Pending Completion</Text>
-                  {this.getOrders('COMPLETEP')}
-                </View>
-              )}
-              {!this.getOrders('ACTIVE').every(this.isUndefined) && (
-                <View>
-                  <Text style={{ margin: 20, marginBottom: 0, fontWeight: 'bold', fontSize: 25 }}>Active</Text>
-                  {this.getOrders('ACTIVE')}
-                </View>
-              )}
-              </View>                         
-           )}
+            elevation: 5,
 
+          }}>
+            {!this.get('COMPLETEP').every(this.isUndefined) && (
+              <View>
+                <Text style={{ margin: 20, marginBottom: 0, fontWeight: 'bold', fontSize: 25 }}>Pending Completion</Text>
+                {this.getOrders('COMPLETEP')}
+              </View>
+            )}
+            {!this.getOrders('ACTIVE').every(this.isUndefined) && (
+              <View style={{ paddingBottom: 20 }}>
+                <Text style={{ margin: 20, marginBottom: 5, fontWeight: 'bold', fontSize: 25 }}>Active</Text>
+                {this.getOrders('ACTIVE')}
+              </View>
+            )}
+          </View>
+        )}
 
-              <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Upcoming Orders</Text>
-              {this.getOrders('ACCEPTED')}
-              {this.getOrders('ACCEPTED').every(this.isUndefined) && (
-                <Text style={{ marginLeft: 40 }}>You have no upcoming orders</Text>)}
+        {!this.getOrders('ACCEPTED').every(this.isUndefined) && (
+          <View>
+            <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Upcoming Orders</Text>
+            {this.getOrders('ACCEPTED')}
+          </View>
+        )}
 
-              <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Requests</Text>
-              {this.getOrders('PENDING')}
-              {this.getOrders('PENDING').every(this.isUndefined) && (
-                <Text style={{ marginLeft: 40 }}>You have no order requests</Text>)}
-
-              <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Past Orders</Text>
-              {this.getOrders('COMPLETE')}
-              {this.getOrders('COMPLETE').every(this.isUndefined) && (
-                <Text style={{ marginLeft: 40 }}>You have no previous orders</Text>)}
-            </ScrollView>
-          )}
-        </ScrollView>
-      )
+      </ScrollView>)
     } else {
       return (
         <ScrollView contentContainerStyle={{ flex: 1 }} refreshControl={
@@ -257,10 +260,117 @@ class Home extends Component {
         }>
           <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 150 }}>
             <Icon2 style={{ alignSelf: 'center', color: '#E88D72' }} name="file-alert-outline" size={100} />
-            <Text style={{ fontSize: 22, paddingTop: 15 }}>NO ORDERS</Text>
+            <Text style={{ fontSize: 22, paddingTop: 15 }}>NO ACTIVE ORDERS</Text>
+            <Text style={{ fontSize: 16, paddingTop: 10 }}>You don't have any active orders</Text>
+          </View>
+        </ScrollView>
+      )
+    };
+  }
+
+  getPending = () => {
+    var checkPending = !this.getOrders('PENDING').every(this.isUndefined);
+    if (checkPending) {
+      return (
+        <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }>
+          <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Requests</Text>
+          {this.getOrders('PENDING')}
+        </ScrollView>
+      );
+    } else {
+      return (
+        <ScrollView contentContainerStyle={{ flex: 1 }} refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }>
+          <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 150 }}>
+            <Icon2 style={{ alignSelf: 'center', color: '#E88D72' }} name="file-alert-outline" size={100} />
+            <Text style={{ fontSize: 22, paddingTop: 15 }}>NO PENDING ORDERS</Text>
+            <Text style={{ fontSize: 16, paddingTop: 10 }}>You don't have any pending orders</Text>
+          </View>
+        </ScrollView>
+      )
+    }
+  }
+
+  getComplete = () => {
+    var checkComplete = !this.getOrders('COMPLETE').every(this.isUndefined);
+    if (checkComplete) {
+      return (
+        <ScrollView refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }>
+          <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Past Orders</Text>
+          {this.getOrders('COMPLETE')}
+        </ScrollView>
+      );
+    } else {
+      return (
+        <ScrollView contentContainerStyle={{ flex: 1 }} refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }>
+          <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 150 }}>
+            <Icon2 style={{ alignSelf: 'center', color: '#E88D72' }} name="file-alert-outline" size={100} />
+            <Text style={{ fontSize: 22, paddingTop: 15 }}>NO COMPLETE ORDERS</Text>
             <Text style={{ fontSize: 16, paddingTop: 10 }}>You don't have any orders in your history</Text>
           </View>
         </ScrollView>
+      )
+    }
+  }
+
+
+
+  render() {
+    if (this.state.sellerOrders !== undefined) {
+
+      return (
+
+        <TabView
+          navigationState={this.state}
+          renderScene={({ route }) => {
+            switch (route.key) {
+              case 'first':
+                return this.getAccepted();
+              case 'second':
+                return this.getPending();
+              case 'third':
+                return this.getComplete();
+              default:
+                return null;
+            }
+          }}
+          onIndexChange={index => this.setState({ index })}
+          initialLayout={{ width: Dimensions.get('window').width }}
+          renderTabBar={props =>
+            <TabBar
+              {...props}
+              indicatorStyle={{ backgroundColor: 'white' }}
+              style={{ backgroundColor: '#E88D72' }}
+            />
+          }
+        />
+
+
+      )
+    } else {
+      return (
+        <View style={{ flex: 1 }}>
+          <LottieView style={{ flex: 1 }} source={require('../image/loading.json')} autoPlay loop={true} />
+        </View>
       )
     }
   }
