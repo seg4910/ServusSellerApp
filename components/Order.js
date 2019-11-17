@@ -374,85 +374,120 @@ class Order extends Component {
 
                 <Modal isVisible={this.state.isCancelModalVisible}>
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20, padding: 10 }}>
-                            <Icon2 onPress={() => this.toggleRequestModal('CANCEL')} style={{ alignSelf: 'flex-end', paddingRight: 10, color: '#7f8c8d' }} name="close" size={30} />
-                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
-                                <Text style={{ fontSize: 20 }}>Are you sure that you would like to cancel this service?</Text>
+                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20 }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Cancel Order</Text>
+                                <Text style={{ textAlign: 'center', fontSize: 20, padding: 20 }}>Are you sure?</Text>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
                                     <TouchableOpacity
-                                        style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 45, borderRadius: 25, }}
+                                        style={{ flex: 1, backgroundColor: '#bf745e', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomLeftRadius: 20 }}
+                                        onPress={() => this.toggleRequestModal('CANCEL')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>NO</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomRightRadius: 20, }}
                                         onPress={() => this.updateOrderStatus('CANCEL')}>
-                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#543855' }}>CANCEL</Text>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>YES</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
                     </View>
                 </Modal>
+
+
                 <Modal isVisible={this.state.isAccModalVisible}>
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20, padding: 10 }}>
-                            <Icon2 onPress={() => this.toggleRequestModal('ACCEPT')} style={{ alignSelf: 'flex-end', paddingRight: 10, color: '#7f8c8d' }} name="close" size={30} />
-                            <View style={{ flex: 1, flexDirection: 'column', padding: 10 }}>
-                                <Text style={{ fontSize: 20 }}>Are you sure that you would like to accept the offer?</Text>
+                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20 }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Accept Order</Text>
+                                <Text style={{ textAlign: 'center', fontSize: 20, padding: 20 }}>Are you sure?</Text>
                                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
                                     <TouchableOpacity
-                                        style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 45, borderRadius: 25, }}
+                                        style={{ flex: 1, backgroundColor: '#bf745e', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomLeftRadius: 20 }}
+                                        onPress={() => this.toggleRequestModal('ACCEPT')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>NO</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomRightRadius: 20, }}
                                         onPress={() => this.updateOrderStatus('ACCEPT')}>
-                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#543855' }}>ACCEPT</Text>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>YES</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
                     </View>
                 </Modal>
+
+
                 <Modal isVisible={this.state.isDecModalVisible}>
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20, padding: 30 }}>
-                            <Icon2 onPress={() => this.toggleRequestModal('DECLINE')} style={{ alignSelf: 'flex-end', paddingRight: 10, color: '#7f8c8d' }} name="close" size={30} />
-                            <Text style={{ fontSize: 20 }}>Are you sure that you would like to decline the offer?</Text>
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity
-                                    style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 45, borderRadius: 25, }}
-                                    onPress={() => this.updateOrderStatus('DECLINE')}>
-                                    <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#543855' }}>DECLINE</Text>
-                                </TouchableOpacity>
+                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20 }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Decline Offer</Text>
+                                <Text style={{ textAlign: 'center', fontSize: 20, padding: 20 }}>Are you sure?</Text>
+                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#bf745e', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomLeftRadius: 20 }}
+                                        onPress={() => this.toggleRequestModal('DECLINE')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>NO</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomRightRadius: 20, }}
+                                        onPress={() => this.updateOrderStatus('DECLINE')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>YES</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                     </View>
                 </Modal>
+
                 <Modal isVisible={this.state.isBeginServiceModalVisible}>
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20, padding: 30 }}>
-                            <Icon2 onPress={() => this.toggleRequestModal('BEGIN')} style={{ alignSelf: 'flex-end', paddingRight: 10, color: '#7f8c8d' }} name="close" size={30} />
-                            <Text style={{ fontSize: 20 }}>Please confirm you are beginning the order work now</Text>
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity
-                                    style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 45, borderRadius: 25, }}
-                                    onPress={() => this.updateOrderStatus('ACTIVE')}>
-                                    <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#543855' }}>BEGIN</Text>
-                                </TouchableOpacity>
+                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20 }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Begin Order</Text>
+                                <Text style={{ textAlign: 'center', fontSize: 20, padding: 20 }}>Are you sure?</Text>
+                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#bf745e', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomLeftRadius: 20 }}
+                                        onPress={() => this.toggleRequestModal('BEGIN')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>NO</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomRightRadius: 20, }}
+                                        onPress={() => this.updateOrderStatus('ACTIVE')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>YES</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                     </View>
                 </Modal>
+
                 <Modal isVisible={this.state.isCompleteServiceModalVisible}>
                     <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20, padding: 30 }}>
-                            <Icon2 onPress={() => this.toggleRequestModal('COMPLETEP')} style={{ alignSelf: 'flex-end', paddingRight: 10, color: '#7f8c8d' }} name="close" size={30} />
-                            <Text style={{ fontSize: 20 }}>Please confirm the service is complete</Text>
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity
-                                    style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 45, borderRadius: 25, }}
-                                    onPress={() => this.updateOrderStatus('COMPLETEP')}>
-                                    <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#543855' }}>Complete</Text>
-                                </TouchableOpacity>
+                        <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20 }}>
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Confirm Order Completion</Text>
+                                <Text style={{ textAlign: 'center', fontSize: 20, padding: 20 }}>Are you sure?</Text>
+                                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#bf745e', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomLeftRadius: 20 }}
+                                        onPress={() => this.toggleRequestModal('COMPLETEP')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>NO</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomRightRadius: 20, }}
+                                        onPress={() => this.updateOrderStatus('COMPLETEP')}>
+                                        <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>YES</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                     </View>
                 </Modal>
-
-
             </View>
         )
     }
