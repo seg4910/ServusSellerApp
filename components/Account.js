@@ -12,7 +12,7 @@ class Account extends Component {
         email: '',
         password: '',
         edit: false,
-        photo: null
+        photo: ''
       }      
     };
 
@@ -22,13 +22,14 @@ class Account extends Component {
           fetch(`http://localhost:8080/api/getAccountInfo/?type=${"sellers"}&id=${result}`)
           .then((response) => response.json())
           .then((responseJson) => {
-    
+            console.log(responseJson.photo);
             this.setState({
               id: responseJson.id,
               name: responseJson.name,
               email: responseJson.email,
               password: responseJson.password,
-              phone: responseJson.phone
+              phone: responseJson.phone,
+              photo: responseJson.photo
             });
           })
           .catch((error) =>{
@@ -85,6 +86,7 @@ class Account extends Component {
             name = {this.state.name}
             email = {this.state.email}
             phone = {this.state.phone}
+            photo = {this.state.photo}
           />
         );
     }
