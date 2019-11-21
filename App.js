@@ -42,6 +42,7 @@ import AuthLoadingScreen from './components/AuthLoadingScreen.js';
 import EditAccountInfo from './components/EditAcountInfo.js';
 import CheckoutServiceLawnMowing from './components/CheckoutServiceLawnMowing.js';
 import CreateService from './components/CreateService.js';
+import SetSchedule from './components/SetSchedule.js';
 import firebase from 'react-native-firebase';
 import Order from './components/Order.js';
 import ChangePassword from './components/ChangePassword.js';
@@ -97,7 +98,13 @@ const DrawerNavigatorExample = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: "Create Service"
       }
-    }              
+    },
+    SetSchedule: {
+      screen: SetSchedule,
+      navigationOptions: {
+        drawerLabel: "Set Schedule"
+      }
+    }                 
   },
   {
     contentComponent: props => (
@@ -291,6 +298,17 @@ const AppStack = createStackNavigator({
   },
   CreateService: {
     screen: CreateService,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },
+  SetSchedule: {
+    screen: SetSchedule,
     navigationOptions: ({ navigation }) => ({
       title: "Servus",
       //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
