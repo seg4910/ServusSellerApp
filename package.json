@@ -15,6 +15,7 @@
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-awesome-card-io": "^0.8.2",
+    "react-native-calendars": "^1.214.0",
     "react-native-checkout": "0.0.8",
     "react-native-elements": "^1.1.0",
     "react-native-firebase": "^5.5.6",
