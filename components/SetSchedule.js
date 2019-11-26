@@ -8,15 +8,14 @@ class SetSchedule extends Component {
     }
 
     setSchedule = (userInput) => {
-        const serviceId = this.props.navigation.getParam("serviceId", 1);
         AsyncStorage.getItem('userId', (err, result) => {
             fetch(
-                `http://localhost:8080/api/setSellerAvailability/?sellerId=${result}&startHour=${userInput.startHour}&endHour=${userInput.endHour}&day=${userInput.day}&serviceId=${serviceId}`
+                `http://localhost:8080/api/setSellerAvailability/?sellerId=${result}&startHour=${userInput.startHour}&endHour=${userInput.endHour}&day=${userInput.day}`
             )
                 .then(response => response.json())
                 .then(responseJson => {
-                    alert("Added to schedule!")
-                    this.props.navigation.navigate('Home')
+                    this.props.navigation.state.params.onGoBack();
+                    this.props.navigation.goBack()
                 })
                 .catch(error => {
                     console.error(error);

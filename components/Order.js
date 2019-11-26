@@ -259,10 +259,6 @@ class Order extends Component {
         }
     }
 
-    beginServiceOrder = () => {
-        alert('we have begun');
-    }
-
     render() {
         const { navigation } = this.props;
 
