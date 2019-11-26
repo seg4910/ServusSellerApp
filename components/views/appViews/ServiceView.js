@@ -4,8 +4,11 @@ import {
   Picker,
   Text,
   View,
-  Button
+  Button, 
+  ScrollView, 
+  TouchableOpacity
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 class CreateServiceView extends Component {
   constructor(props) {
@@ -18,76 +21,103 @@ class CreateServiceView extends Component {
       minPrice: 0,
       maxPrice: 0,
       priceHr: 0,
+      isFocused: false
+    }
+  };
+
+  handleFocus = event => {
+    this.setState({ isFocused: true });
+    if (this.props.onFocus) {
+      this.props.onFocus(event);
+    }
+  };
+
+  handleBlur = event => {
+    this.setState({ isFocused: false });
+    if (this.props.onBlur) {
+      this.props.onBlur(event);
     }
   };
 
   render() {
-
-      return (
-      <View style={st.container}>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Service Name: </Text>
+    const { isFocused } = this.state;
+    const { onFocus, onBlur } = this.props;
+    return (
+      <ScrollView style={{ flex: 1 }}>
+        <View style={{
+          marginTop: 30, marginLeft: 30, marginRight: 30,
+          marginBottom: 30
+        }}>
+          <Text style={{ fontSize: 20 }}>Service Name </Text>
           <TextInput
-            style={st.input2}
+            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="text"
-            placeholder="Precision Mowing"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
+            selectionColor={'teal'}
+            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
             onChangeText={text => this.setState({ serviceName: text })}
-            underlineColorAndroid="transparent"
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
           />
         </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Service Category: </Text>
+        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+          <Text style={{ fontSize: 20 }}>Service Category </Text>
           <Picker
-            style={{height:50, width: 200}}
+            style={{ height: 50, width: 350 }}
             selectedValue={this.state.serviceCategory}
             onValueChange={(itemValue, itemIndex) =>
-              this.setState({serviceCategory: itemValue})}
+              this.setState({ serviceCategory: itemValue })}
           >
-            <Picker.Item label="Lawn Mowing" value="LM"/>
+            <Picker.Item label="Lawn Mowing" value="LM" />
+            <Picker.Item label="Handiman" value="HM" />
+            <Picker.Item label="Snow Shoveling" value="SS" />
           </Picker>
         </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>City: </Text>
+        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+          <Text style={{ fontSize: 20 }}>City </Text>
           <TextInput
-            style={st.input2}
+            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="text"
-            placeholder="Ottawa"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
+            selectionColor={'teal'}
+            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
             onChangeText={text => this.setState({ city: text })}
-            underlineColorAndroid="transparent"
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
           />
         </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Price/hr ($): </Text>
+        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+          <Text style={{ fontSize: 20 }}>Price/hr ($) </Text>
           <TextInput
-            style={st.input2}
+            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="number"
-            placeholder="300"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
+            selectionColor={'teal'}
+            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
             onChangeText={num => this.setState({ priceHr: num })}
-            underlineColorAndroid="transparent"
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
           />
         </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Service Description: </Text>
+        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+          <Text style={{ fontSize: 20 }}>Service Description </Text>
           <TextInput
-            style={st.input2}
+            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="text"
-            placeholder="My service is awesome"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
+            selectionColor={'teal'}
+            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
             onChangeText={text => this.setState({ serviceDescription: text })}
-            underlineColorAndroid="transparent"
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
           />
         </View>
-
-
-        <View style={st.container}>
-          <Button title='Create Service' onPress={() => this.props.createService(this.state)}/>
+        <View style={{ marginLeft: 30, marginRight: 40 }}>
+          <TouchableOpacity
+            style={st.btn}
+            onPress={() => this.props.createService(this.state)}>
+            <Text style={st.btnText}>CREATE SERVICE</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-      );
-   
+      </ScrollView>
+    );
+
   }
 }
 
