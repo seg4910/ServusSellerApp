@@ -83,12 +83,12 @@ class SchedulingView extends Component {
                         markedDates={this.state.markedDates}
                         onDayPress={(day) => {
                             console.log('selected day', day)
-                            this.setState({ day: moment(day).format('YYYY-MM-DD') })
+                            this.setState({ day: moment(day.dateString).format('YYYY-MM-DD') })
                             this.setMarkedDates(day.dateString)
                         }}
                         onDayLongPress={(day) => {
                             console.log('selected day', day)
-                            this.setState({ day: moment(day).format('YYYY-MM-DD') })
+                            this.setState({ day: moment(day.dateString).format('YYYY-MM-DD') })
                         }}
                         monthFormat={'MMMM yyyy'}
 

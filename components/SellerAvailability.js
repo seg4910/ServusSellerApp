@@ -28,8 +28,11 @@ class SellerAvailability extends Component {
   };
 
   componentDidMount() {
-    const { navigation } = this.props;
+    this.loadData();
+  }
 
+
+  loadData = () => {
     AsyncStorage.getItem('userId', (err, result) => {
       fetch(`http://localhost:8080/api/getSellerAvailability?sellerId=${result}`)
         .then((response) => response.json())
@@ -60,7 +63,6 @@ class SellerAvailability extends Component {
     });
   }
 
-
   // save the selected day for ScheduleService component
   selectDay = (day) => {
     this.setState({
@@ -69,7 +71,9 @@ class SellerAvailability extends Component {
   }
 
   addAvailability = () => {
-      this.props.navigation.navigate('SetSchedule');
+      this.props.navigation.navigate('SetSchedule', {
+        onGoBack: () => this.loadData()
+      });
   }
 
   render() {

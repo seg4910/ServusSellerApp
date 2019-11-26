@@ -14,8 +14,8 @@ class SetSchedule extends Component {
             )
                 .then(response => response.json())
                 .then(responseJson => {
-                    alert("Added to schedule!")
-                    this.props.navigation.navigate('Home')
+                    this.props.navigation.state.params.onGoBack();
+                    this.props.navigation.goBack()
                 })
                 .catch(error => {
                     console.error(error);
