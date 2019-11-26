@@ -48,6 +48,7 @@ import Order from './components/Order.js';
 import ChangePassword from './components/ChangePassword.js';
 import PaymentInfo from './components/PaymentInfo.js';
 import AddNewCard from './components/AddNewCard.js';
+import SellerAvailability from './components/SellerAvailability.js';
 
 class NavigationDrawerStructure extends Component {
   //Structure for the navigation Drawer
@@ -90,21 +91,21 @@ const DrawerNavigatorExample = createDrawerNavigator(
     Account: {
       screen: Account,
       navigationOptions: {
-        drawerLabel: "My Account"
+        drawerLabel: "Account"
       }
     },
+    Availability: {
+      screen: SellerAvailability,
+      navigationOptions: {
+        drawerLabel: "Availability"
+      }
+    },    
     CreateService: {
       screen: CreateService,
       navigationOptions: {
         drawerLabel: "Create Service"
       }
-    },
-    SetSchedule: {
-      screen: SetSchedule,
-      navigationOptions: {
-        drawerLabel: "Set Schedule"
-      }
-    }                 
+    }          
   },
   {
     contentComponent: props => (
@@ -361,7 +362,18 @@ const AppStack = createStackNavigator({
       },
       headerTintColor: "#000000"
     })
-  },  
+  },
+  SellerAvailability: {
+    screen: SellerAvailability,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },      
 });
 
 
