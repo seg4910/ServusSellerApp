@@ -17,7 +17,6 @@ class ServiceCard extends Component {
   };
 
   render() {
-
       return (
 
         <View

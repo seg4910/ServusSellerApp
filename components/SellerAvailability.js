@@ -53,7 +53,7 @@ class SellerAvailability extends Component {
               this.getDailyShifts();
 
             } else {
-              alert("Something went wrong");
+              // no availabilities
             }
           });
         })
@@ -71,9 +71,9 @@ class SellerAvailability extends Component {
   }
 
   addAvailability = () => {
-      this.props.navigation.navigate('SetSchedule', {
-        onGoBack: () => this.loadData()
-      });
+    this.props.navigation.navigate('SetSchedule', {
+      onGoBack: () => this.loadData()
+    });
   }
 
   render() {
@@ -83,19 +83,19 @@ class SellerAvailability extends Component {
       <View style={{ flex: 1 }}>
 
 
-          <Agenda
-            items={this.state.availableDates}
-            loadItemsForMonth={this.getDailyShifts.bind(this)}
-            renderItem={this.renderItem.bind(this)}
-            renderEmptyData={this.renderEmptyDate.bind(this)}
-            rowHasChanged={this.rowHasChanged.bind(this)}
-            // callback that gets called on day press
-            onDayPress={(day) => { this.selectDay(day) }}
-            // callback that gets called when day changed while scrolling through agenda
-            onDayChange={(day) => { this.selectDay(day) }}
-          />
+        <Agenda
+          items={this.state.availableDates}
+          loadItemsForMonth={this.getDailyShifts.bind(this)}
+          renderItem={this.renderItem.bind(this)}
+          renderEmptyData={this.renderEmptyDate.bind(this)}
+          rowHasChanged={this.rowHasChanged.bind(this)}
+          // callback that gets called on day press
+          onDayPress={(day) => { this.selectDay(day) }}
+          // callback that gets called when day changed while scrolling through agenda
+          onDayChange={(day) => { this.selectDay(day) }}
+        />
 
-        <View style={{justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
+        <View style={{ justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
           <TouchableOpacity
             style={st.btn}
             onPress={this.addAvailability}>
@@ -112,12 +112,13 @@ class SellerAvailability extends Component {
   // set all the items for the Agenda based on the days and shifts on those days
   getDailyShifts() {
     let availableDates = {};
-    this.state.shiftDays.forEach((day) => {
-      availableDates[day] =
-        this.getShiftsForDay(day)
-    });
-    this.setState({ availableDates: availableDates });
-    console.log('AVAILABLE DATES: ' + availableDates);
+    if (this.state.shiftDays) {
+      this.state.shiftDays.forEach((day) => {
+        availableDates[day] =
+          this.getShiftsForDay(day)
+      });
+      this.setState({ availableDates: availableDates });
+    }
   }
 
   // for each day the seller is available, push all the shifts for that day to an array

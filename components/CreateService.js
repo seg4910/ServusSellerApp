@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import CreateServiceView from "./views/appViews/CreateServiceView.js";
+import {
+
+    AsyncStorage
+} from "react-native";
 
 class CreateService extends Component {
     constructor(props) {
@@ -15,8 +19,8 @@ class CreateService extends Component {
                 )
                 .then(response => response.json())
                 .then(responseJson => {
-                alert("Service created!")
-                this.props.navigation.navigate('Home')
+                    this.props.navigation.state.params.loadServices();
+                    this.props.navigation.navigate('Services')
                 })
                 .catch(error => {
                 console.error(error);
