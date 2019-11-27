@@ -29,15 +29,34 @@ class Service extends Component {
                 serviceInfo: responseJson.serviceInfo
             }, function(){
                 if(this.state.serviceInfo){
-                this.setState({serviceId: this.state.serviceInfo[0].id});
-                this.setState({serllerId: this.state.serviceInfo[0].sellerId});
-                this.setState({serviceName: this.state.serviceInfo[0].serviceName});
-                this.setState({serviceDescription: this.state.serviceInfo[0].serviceDescription});
-                this.setState({sellerName: this.state.serviceInfo[0].sellerName});
-                this.setState({minPrice: this.state.serviceInfo[0].minPrice});
-                this.setState({maxPrice: this.state.serviceInfo[0].maxPrice});
-                this.setState({serviceCategory: this.state.serviceInfo[0].serviceCategory});
-                } else {
+                  console.log('here');
+                  this.setState({serviceId: this.state.serviceInfo[0].id});
+                  this.setState({sellerId: this.state.serviceInfo[0].sellerID});
+                  this.setState({serviceName: this.state.serviceInfo[0].serviceName});
+                  this.setState({serviceDescription: this.state.serviceInfo[0].serviceDescription});
+                  this.setState({sellerName: this.state.serviceInfo[0].sellerName});
+                  this.setState({price: this.state.serviceInfo[0].priceHr});
+                  this.setState({serviceCategory: this.state.serviceInfo[0].serviceCategory});
+                  this.setState({city: this.state.serviceInfo[0].city})
+                
+                fetch(`http://localhost:8080/api/getAccountInfo?type=${'sellers'}&id=${this.state.serviceInfo[0].sellerID}`)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.setState({
+                        sellerPhoto: responseJson.photo
+                    })
+                })    
+
+                fetch('http://localhost:8080/api/getRatings?id=' + this.state.serviceInfo[0].id)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.setState({
+                        ratings: responseJson.ratingInfo
+                    })
+                })  
+              
+              
+              } else {
                 //navigate to Create Account
                 alert("Something went wrong");
         
@@ -50,24 +69,22 @@ class Service extends Component {
         });
     }    
 
-    //navigate to purchase service screen
-    purchaseService = () => {
-        //var serviceCategory = 'CheckoutService'+this.state.serviceCategory;
-        this.props.navigation.navigate('CheckoutServiceLawnMowing', {
-          serviceInfo: this.state.serviceInfo
-        });
-    }
 
     render() {
         const { navigation } = this.props;
         return (
           <ServiceView
-            purchaseService = {this.purchaseService}
-            serviceName = {this.state.serviceName}
-            sellerName = {this.state.sellerName}
-            serviceDescription = {this.state.serviceDescription}
-            minPrice = {this.state.minPrice}
-            maxPrice = {this.state.maxPrice}
+          viewAvailability = {this.viewAvailability}
+          serviceName = {this.state.serviceName}
+          sellerName = {this.state.sellerName}
+          serviceDescription = {this.state.serviceDescription}
+          minPrice = {this.state.minPrice}
+          maxPrice = {this.state.maxPrice}
+          serviceCategory = {this.state.serviceCategory}
+          ratings = {this.state.ratings}
+          city = {this.state.city}
+          price = {this.state.price}
+          sellerPhoto = {this.state.sellerPhoto}
           />
         );
     }
