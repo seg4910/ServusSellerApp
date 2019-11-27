@@ -67,7 +67,13 @@ class Service extends Component {
             console.error(error);
             });
         });
-    }    
+    }  
+    
+    editService = (id) => {
+      this.props.navigation.navigate('EditService', {
+        id: this.state.serviceId
+      })
+    }
 
 
     render() {
@@ -85,6 +91,7 @@ class Service extends Component {
           city = {this.state.city}
           price = {this.state.price}
           sellerPhoto = {this.state.sellerPhoto}
+          editService = {this.editService}
           />
         );
     }

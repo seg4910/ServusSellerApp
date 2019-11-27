@@ -89,7 +89,7 @@ class ServiceView extends Component {
               </View>
             </View>
             <Image
-              source={{uri: this.props.sellerPhoto}}
+              source={{ uri: this.props.sellerPhoto }}
               style={{
                 width: 90,
                 height: 90,
@@ -98,7 +98,7 @@ class ServiceView extends Component {
             />
           </View>
 
-          <View style={{ flex:1 }}>
+          <View style={{ flex: 1 }}>
             <View style={{ flex: 1.5, marginLeft: 20, marginTop: 20 }}>
               <Text style={{ fontSize: 22, paddingBottom: 10, fontWeight: 'bold' }}>Details</Text>
 
@@ -111,7 +111,7 @@ class ServiceView extends Component {
                 </View>
               </View>
 
-              <View style={{ marginLeft: 10, marginRight: 30}}>
+              <View style={{ marginLeft: 10, marginRight: 30 }}>
                 <View style={{ flexDirection: 'row' }}>
                   <View style={{ flex: 1, alignItems: 'center' }}>
                     <Icon2 color='#E88D72' name="map-marker-radius" size={45} />
@@ -130,6 +130,26 @@ class ServiceView extends Component {
             <View style={{ marginLeft: 20, flex: 2 }}>
               <Text style={{ fontSize: 22, paddingBottom: 15, fontWeight: 'bold' }}>Reviews</Text>
               <ScrollView style={{ marginLeft: 10 }}>{this.getRatings()}</ScrollView>
+            </View>
+
+            <View style={{ flex: .5, flexDirection:'row', marginHorizontal:10 }}>
+
+              <View style={{flex:1, marginRight:5}}>
+                <TouchableOpacity
+                  style={{backgroundColor:'#E88D72', padding:10, borderRadius:5}}
+                  onPress={() => this.createService()}>
+                  <Text style={st.btnText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={{flex:1}}>
+                <TouchableOpacity
+                  style={{backgroundColor:'#E88D72', padding:10, borderRadius:5}}
+                  onPress={() => this.props.editService()}>
+                  <Text style={st.btnText}>Edit</Text>
+                </TouchableOpacity>
+              </View>
+
             </View>
 
           </View>
