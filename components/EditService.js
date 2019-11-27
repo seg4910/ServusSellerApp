@@ -55,12 +55,12 @@ class EditService extends Component {
         const name = this.props.navigation.getParam("name", "NO-NAME");
         AsyncStorage.getItem('userId', (err, result) => {
             fetch(
-                `http://localhost:8080/api/createService/?sellerId=${result}&sellerName=${name}&serviceName=${serviceInfo.serviceName}&serviceCategory=${serviceInfo.serviceCategory}&serviceDescription=${serviceInfo.serviceDescription}&city=${serviceInfo.city}&minPrice=${serviceInfo.minPrice}&maxPrice=${serviceInfo.maxPrice}&priceHr=${serviceInfo.priceHr}`
+                `http://localhost:8080/api/updateService/?serviceId=${serviceInfo.serviceId}&sellerId=${result}&sellerName=${name}&serviceName=${serviceInfo.serviceName}&serviceCategory=${serviceInfo.serviceCategory}&serviceDescription=${serviceInfo.serviceDescription}&priceHr=${serviceInfo.priceHr}`
             )
                 .then(response => response.json())
                 .then(responseJson => {
-                    alert("Service created!")
-                    this.props.navigation.navigate('Home')
+                    alert("Service updated!")
+                    this.props.navigation.navigate('Services')
                 })
                 .catch(error => {
                     console.error(error);

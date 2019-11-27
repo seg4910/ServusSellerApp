@@ -14,14 +14,14 @@ class EditServiceView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      serviceId: this.props.serviceInfo[0].id,
       serviceName: this.props.serviceInfo[0].serviceName,
       serviceCategory: this.props.serviceInfo[0].serviceCategory,
       serviceDescription: this.props.serviceInfo[0].serviceDescription,
-      city: "",
-      minPrice: 0,
-      maxPrice: 0,
+      city: this.props.serviceInfo[0].city,
       priceHr: this.props.serviceInfo[0].priceHr,
-      isFocused: false
+      isFocused: false,
+      sellerName: this.props.serviceInfo[0].sellerName
     }
 
   };
@@ -88,7 +88,7 @@ class EditServiceView extends Component {
             onChangeText={num => this.setState({ priceHr: num })}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
-            value={this.state.priceHr}
+            value={this.state.priceHr.toString()}
           />
         </View>
         <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
