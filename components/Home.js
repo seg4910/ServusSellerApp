@@ -36,7 +36,6 @@ class Home extends Component {
       .then(enabled => {
         if (enabled) {
           firebase.messaging().getToken().then(token => {
-            console.log("LOG: ", token);
 
             AsyncStorage.getItem('userId', (err, result) => {
               fetch('http://localhost:8080/api/editField', {

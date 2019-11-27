@@ -7,68 +7,48 @@ import ServiceCard from './views/appViews/ServiceCard.js';
 const fetch = require("node-fetch");
 
 class ServicePreview extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        servicePreviews: [],
-        username: "",
-        selectedService: 0
-      };
+  constructor(props) {
+    super(props);
+    this.state = {
+      servicePreviews: [],
+      username: "",
+      selectedService: 0
     };
+  };
 
-    componentDidMount() {
-        AsyncStorage.getItem('userId', (err, result) => {        
-            fetch(`http://localhost:8080/api/getSellerServicePreviews?id=${result}`)
-            .then(response => response.json())
-            .then(responseJson => {
-                console.log(JSON.stringify(responseJson));
-                this.setState(
-                {
-                    servicePreviews: responseJson.servicePreviews
-                },
-                function() {
-                    if (this.state.servicePreviews) {
-                    var serviceCount = Object.keys(this.state.servicePreviews);
-                    } else {
-                    //navigate to Create Account
-                    alert("Something went wrong");
-                    }
-                }
-                );
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        });
-    }    
+  componentDidMount() {
+    this.setState({servicePreviews: this.props.servicePreviews})
+  }
 
-      selectService = (id) => {
-        this.props.selectService(id);
-      };
-    
-      servicePreviewList() {
-        return this.state.servicePreviews.map(data => {
-          return (
-            <ServiceCard 
-            id = {data.id}
-            sellerName = {data.sellerName}
-            serviceName = {data.serviceName}
-            serviceDescription = {data.serviceDescription}
-            priceHr = {data.priceHr}
-            selectService = {this.selectService}
-            serviceCat = {data.serviceCategory}
-         />
-          );
-        });
-      }
-    
-      render() {
-        const { navigation } = this.props;
+  selectService = (id) => {
+    this.props.selectService(id);
+  };
+
+  servicePreviewList() {
+    if (this.state.servicePreviews) {
+      return this.state.servicePreviews.map(data => {
         return (
-          <ScrollView contentContainerStyle={st.container}>{this.servicePreviewList()}</ScrollView>
+          <ServiceCard
+            id={data.id}
+            sellerName={data.sellerName}
+            serviceName={data.serviceName}
+            serviceDescription={data.serviceDescription}
+            priceHr={data.priceHr}
+            selectService={this.selectService}
+            serviceCat={data.serviceCategory}
+          />
         );
-      }
+      });
+    }
+  }
+
+  render() {
+    const { navigation } = this.props;
+    return (
+      <ScrollView contentContainerStyle={{flex:1, justifyContent:'center'}}>{this.servicePreviewList()}</ScrollView>
+    );
+  }
 }
-      
+
 const st = require("./../styles/style.js");
 export default ServicePreview;
