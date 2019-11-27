@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CreateServiceView from "./views/appViews/ServiceView.js";
+import CreateServiceView from "./views/appViews/CreateServiceView.js";
 
 class CreateService extends Component {
     constructor(props) {

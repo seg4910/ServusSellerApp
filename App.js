@@ -49,6 +49,8 @@ import ChangePassword from './components/ChangePassword.js';
 import PaymentInfo from './components/PaymentInfo.js';
 import AddNewCard from './components/AddNewCard.js';
 import SellerAvailability from './components/SellerAvailability.js';
+import Services from './components/Services.js';
+import EditService from './components/EditService.js';
 
 class NavigationDrawerStructure extends Component {
   //Structure for the navigation Drawer
@@ -100,10 +102,10 @@ const DrawerNavigatorExample = createDrawerNavigator(
         drawerLabel: "Availability"
       }
     },    
-    CreateService: {
-      screen: CreateService,
+    Services: {
+      screen: Services,
       navigationOptions: {
-        drawerLabel: "Create Service"
+        drawerLabel: "Services"
       }
     }          
   },
@@ -373,7 +375,29 @@ const AppStack = createStackNavigator({
       },
       headerTintColor: "#000000"
     })
-  },      
+  },     
+  Services: {
+    screen: Services,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  },
+  EditService: {
+    screen: EditService,
+    navigationOptions: ({ navigation }) => ({
+      title: "Servus",
+      //headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: "#ffffff"
+      },
+      headerTintColor: "#000000"
+    })
+  }          
 });
 
 
