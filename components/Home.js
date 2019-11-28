@@ -118,6 +118,7 @@ class Home extends Component {
   }
 
   getOrders = (status) => {
+    let duration;
     if (this.state.sellerOrders) {
 
       const currentTime = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');

@@ -37,7 +37,6 @@ class AccountView extends Component {
 
   savePhotoUrl = () => {
     // fetch post image url
-
     AsyncStorage.getItem('userId', (err, result) => {
       fetch('http://localhost:8080/api/editField', {
         method: 'POST',
@@ -92,9 +91,7 @@ class AccountView extends Component {
       imgRef.putFile(image.path).then((file) => {
 
         imgRef.getDownloadURL().then((downloadURL) => {
-          console.log('here');
           this.setState({downloadUrl: downloadURL});
-          console.log('here');
           this.savePhotoUrl();
         })
       });
