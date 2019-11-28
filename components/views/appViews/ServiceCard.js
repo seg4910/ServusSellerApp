@@ -5,11 +5,13 @@ import {
   View,
   Image,
   Button,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 import StarRating from "react-native-star-rating";
+const WIDTH = Math.round(Dimensions.get("window").width - 50);
 
 class ServiceCard extends Component {
   constructor(props) {
@@ -24,9 +26,10 @@ class ServiceCard extends Component {
         style={{
           //borderRightColor: "#43B14B",
           //borderRightWidth: 3,
+          flex:1,
+          width:WIDTH,
           height: 200,
           margin: 10,
-          width: 350,
           marginBottom: 10,
           borderRadius: 5
         }}
@@ -39,7 +42,6 @@ class ServiceCard extends Component {
             style={{
               overflow: "hidden",
               height: 200,
-              width: 350,
               flexDirection: "row",
               borderRadius: 5,
               borderWidth: 0.5,
@@ -48,7 +50,19 @@ class ServiceCard extends Component {
           >
             <View style={{ flex: 4 }}>
               
-              {this.props.serviceCat == 'LM' &&
+             {this.props.servicePhoto &&
+                <Image
+                    source={{uri: this.props.servicePhoto}}
+                    style={{
+                    flex: 1,
+                    width: null,
+                    height: null,
+                    resizeMode: "cover"
+                    }}
+                />
+            }
+
+{/*               {this.props.serviceCat == 'LM' &&
                 <Image
                     source={require("./../../../image/LawnMowing.jpg")}
                     style={{
@@ -91,7 +105,7 @@ class ServiceCard extends Component {
                     resizeMode: "cover"
                     }}
                 />
-            }
+            } */}
 
             </View>
             <View

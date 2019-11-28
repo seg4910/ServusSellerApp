@@ -1,209 +1,172 @@
 import React, { Component } from "react";
 import {
-  TextInput,
-  Picker,
+  StyleSheet,
   Text,
   View,
-  Button,
   Image,
-  AsyncStorage,
-  Dimensions
+  Button,
+  TouchableOpacity,
+  ScrollView
 } from "react-native";
-import ImagePicker from 'react-native-image-picker';
-import firebase from 'react-native-firebase';
+import StarRating from "react-native-star-rating";
+import LottieView from 'lottie-react-native';
+import Icon from "react-native-vector-icons/FontAwesome";
+import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 
-const screenWidth = Dimensions.get('screen').width;
-
-class CreateServiceView extends Component {
+class ServiceView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      serviceName: "",
-      serviceCategory: "LM",
-      serviceDescription: "",
-      city: "",
-      photo: null,
-      minPrice: 0,
-      maxPrice: 0,
-      priceHr: 0,
+  };
+
+  componentDidMount() {
+    console.log(this.props.ratings);
+  }
+
+  getRatings = () => {
+    if (this.props.ratings !== null) {
+      return (this.props.ratings.map((rating) => {
+        return (
+          <View style={{ backgroundColor: '#f2f2f2', padding: 20, borderRadius: 10, marginBottom: 20 }}>
+            <View style={{ width: 100 }}>
+              <StarRating
+                disabled={true}
+                maxStars={5}
+                rating={rating.rating}
+                starSize={16}
+                fullStarColor="orange"
+                emptyStarColor="orange"
+                style={{}}
+              />
+            </View>
+            <Text>{rating.comment}</Text>
+          </View>);
+      }))
+    } else {
+      console.log('she null');
+      return null;
     }
-  };
 
-  createService = () => {
-    const {
-      serviceName,
-      serviceCategory,
-      serviceDescription,
-      city,
-      minPrice,
-      maxPrice,
-      priceHr,
-    } = this.state;
-    
-    AsyncStorage.getItem('userId', (err, id) => {
-      fetch(
-        `http://localhost:8080/api/getAccountInfo/?type=sellers&id=${id}`
-      )
-        .then(response => response.json())
-        .then(responseJson => {
-          fetch(
-            `http://localhost:8080/api/createService/?sellerId=${id}&sellerName=${responseJson.name}&serviceName=${serviceName}&serviceCategory=${serviceCategory}&serviceDescription=${serviceDescription}&city=${city}&minPrice=${minPrice}&maxPrice=${maxPrice}&priceHr=${priceHr}`
-            )
-            .then(response => response.json())
-            .then(responseJson => {
-                alert("Service created!");
-                this.state.photo ? this.uploadImage(responseJson.serviceId) : null;
-                this.props.navigation.navigate('Home');
-            })
-            .catch(error => {
-            console.error(error);
-            });
-        })
-    });
-}
+  }
 
-  handleChoosePhoto = () => {
-    const options = {};
-    ImagePicker.showImagePicker(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        if (response.uri) {
-          var imgPath = ('file://' + response.path).toString();
-          const imgUri = response.uri.toString();
 
-          Image.getSize(imgUri, (width, height) => {
-            const scaleFactor = width / screenWidth;
-            const imageHeight = height / scaleFactor;
-              this.setState({
-                photo: {
-                  image: imgUri,
-                  path: imgPath,
-                  imageHeight: imageHeight,
-                  imageWidth: width,
-                }
-              });
-          });
-        }
-      }
-    });
-  };
-
-  uploadImage = (serviceId) => {
-    const fileName = `service_${serviceId}`;
-    const imgRef = firebase.storage().ref('images').child('/services').child(fileName);
-    try {
-      imgRef.putFile(this.state.photo.path).then((file) => {
-        imgRef.getDownloadURL().then((downloadUrl) => {
-            fetch('http://localhost:8080/api/editField', {
-              method: 'POST',
-              headers: {
-                 Accept: 'application/json',
-                 'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                 type: "services",
-                 userId: serviceId,
-                 fieldType: "photo",
-                 fieldValue: downloadUrl,
-              }),
-             });
-        })
-      });
-    } catch {
-      // something going wrong here, error being thrown but upload works fine
-    }
-  };
   render() {
+    console.log(this.props);
+    if (this.props.ratings !== undefined) {
       return (
-      <View style={st.container}>
-        <View style={{ alignItems: "center", }}>
-          {
-            this.state.photo ?
-              <Image
-                source={{ uri: this.state.photo.image }}
-                style={{
-                  padding:10,
-                  height: this.state.photo.imageHeight / 2,
-                  width: this.state.photo.imageWidth / 2,
-                }}
-                  />
-            : null
-          }
-        </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Service Name: </Text>
-          <TextInput
-            style={st.input2}
-            type="text"
-            placeholder="Precision Mowing"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
-            onChangeText={text => this.setState({ serviceName: text })}
-            underlineColorAndroid="transparent"
-          />
-        </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Service Category: </Text>
-          <Picker
-            style={{height:50, width: 200}}
-            selectedValue={this.state.serviceCategory}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({serviceCategory: itemValue})}
-          >
-            <Picker.Item label="Lawn Mowing" value="LM"/>
-          </Picker>
-        </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>City: </Text>
-          <TextInput
-            style={st.input2}
-            type="text"
-            placeholder="Ottawa"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
-            onChangeText={text => this.setState({ city: text })}
-            underlineColorAndroid="transparent"
-          />
-        </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Price/hr ($): </Text>
-          <TextInput
-            style={st.input2}
-            type="number"
-            placeholder="300"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
-            onChangeText={num => this.setState({ priceHr: num })}
-            underlineColorAndroid="transparent"
-          />
-        </View>
-        <View style={st.serviceContainer}>
-          <Text style={st.heading2}>Service Description: </Text>
-          <TextInput
-            style={st.input2}
-            type="text"
-            placeholder="My service is awesome"
-            placeholderTextColor={"rgba(255,255,255,0.7)"}
-            onChangeText={text => this.setState({ serviceDescription: text })}
-            underlineColorAndroid="transparent"
-          />
-        </View>
+        <View style={{ flex: 1 }}>
+          <View style={{
+            flexDirection: "row",
+            padding: 10,
+            paddingBottom: 5,
+            borderBottomColor: "#dfe6e9",
+            borderBottomWidth: 2,
+          }}>
 
-        <View style={st.container}>
-          <Button title='Upload photo' onPress={() => this.handleChoosePhoto()}/>
-        </View>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "column",
+                marginLeft: 20,
+                paddingBottom: 10
+              }}
+            >
+              <Text style={{ fontSize: 30, color: "#000" }}>
+                {this.props.serviceName}
+              </Text>
+              <Text style={{ fontSize: 15, color: '#7f8c8d' }}>
+                {this.props.serviceCategory} Service
+                </Text>
+              <View style={{ width: 100, paddingTop: 10 }}>
+                <StarRating
+                  disabled={true}
+                  maxStars={5}
+                  rating={4.5}
+                  starSize={16}
+                  fullStarColor="orange"
+                  emptyStarColor="orange"
+                  style={{}}
+                />
+              </View>
+            </View>
+            <Image
+              source={{ uri: this.props.sellerPhoto }}
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: 55
+              }}
+            />
+          </View>
 
-        <View style={st.container}>
-          <Button title='Create Service' onPress={() => this.createService()}/>
+          <View style={{ flex: 1 }}>
+            <View style={{ flex: 1.5, marginLeft: 20, marginTop: 20 }}>
+              <Text style={{ fontSize: 22, paddingBottom: 10, fontWeight: 'bold' }}>Details</Text>
+
+              <View style={{ marginLeft: 10, marginBottom: 20 }}>
+                {/*               <View style={{marginBottom:10}}>
+                <Text style={{marginLeft:5, fontSize:18}}>{this.props.sellerName}</Text>
+              </View> */}
+                <View style={{}}>
+                  <Text style={{ marginLeft: 5, fontSize: 18 }}>{this.props.serviceDescription}</Text>
+                </View>
+              </View>
+
+              <View style={{ marginLeft: 10, marginRight: 30 }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ flex: 1, alignItems: 'center' }}>
+                    <Icon2 color='#E88D72' name="map-marker-radius" size={45} />
+                    <Text style={{ fontSize: 20 }}>{this.props.city}</Text>
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'center' }}>
+                    <Icon color='#E88D72' name="dollar" size={40} />
+                    <Text style={{ fontSize: 20 }}>{this.props.price} / Hr</Text>
+                  </View>
+                </View>
+              </View>
+
+
+            </View>
+
+            <View style={{ marginLeft: 20, flex: 2 }}>
+              <Text style={{ fontSize: 22, paddingBottom: 15, fontWeight: 'bold' }}>Reviews</Text>
+              <ScrollView style={{ marginLeft: 10 }}>{this.getRatings()}</ScrollView>
+            </View>
+
+            <View style={{ flex: .5, flexDirection:'row', marginHorizontal:10 }}>
+
+              <View style={{flex:1, marginRight:5}}>
+                <TouchableOpacity
+                  style={{backgroundColor:'#E88D72', padding:10, borderRadius:5}}
+                  onPress={() => this.createService()}>
+                  <Text style={st.btnText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={{flex:1}}>
+                <TouchableOpacity
+                  style={{backgroundColor:'#E88D72', padding:10, borderRadius:5}}
+                  onPress={() => this.props.editService()}>
+                  <Text style={st.btnText}>Edit</Text>
+                </TouchableOpacity>
+              </View>
+
+            </View>
+
+          </View>
+
         </View>
-      </View>
       );
-   
+    } else {
+      return (
+        <View style={{ flex: 1 }}>
+          <LottieView style={{ flex: 1 }} source={require('../../../image/loading.json')} autoPlay loop={true} />
+        </View>
+      )
+    }
+
   }
 }
 
-const st = require("../../../styles/style.js");
+const st = require("./../../../styles/style.js");
 
-export default CreateServiceView;
+export default ServiceView;

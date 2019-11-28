@@ -36,6 +36,7 @@ class ServicePreview extends Component {
             priceHr={data.priceHr}
             selectService={this.selectService}
             serviceCat={data.serviceCategory}
+            servicePhoto={data.photo}
           />
         );
       });
