@@ -31,10 +31,12 @@ class AccountView extends Component {
     }
   };
 
+  updateInfo = () => {
+    this.props.loadData();
+  }
 
   savePhotoUrl = () => {
     // fetch post image url
-    console.log('SAVING PHOTO' + this.state.downloadUrl);
     AsyncStorage.getItem('userId', (err, result) => {
       fetch('http://localhost:8080/api/editField', {
         method: 'POST',
@@ -50,6 +52,7 @@ class AccountView extends Component {
         }),
        });
     })
+    this.updateInfo();
   }
 
 
@@ -100,11 +103,15 @@ class AccountView extends Component {
 };
 
   editAccountInfo = () => {
-    this.props.navigation.navigate("EditAccountInfo");
+    this.props.navigation.navigate("EditAccountInfo", {
+      updateInfo: this.updateInfo 
+    });
   }
 
   changePassword = () => {
-    this.props.navigation.navigate("ChangePassword");
+    this.props.navigation.navigate("ChangePassword", {
+      updateInfo: this.updateInfo 
+    });
   }
 
   render() {

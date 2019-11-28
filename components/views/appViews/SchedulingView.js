@@ -5,10 +5,12 @@ import {
     Text,
     View,
     Button,
-    TimePickerAndroid
+    TimePickerAndroid,
+    TouchableOpacity
 } from "react-native";
 import { Calendar, CalendarList, Agenda, Arrow } from 'react-native-calendars';
 import moment from 'moment';
+import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 class SchedulingView extends Component {
@@ -75,31 +77,66 @@ class SchedulingView extends Component {
 
     render() {
         return (
-            <View>
+            <View style={{ flex: 1 }}>
                 <View>
                     <Calendar
-                    markedDates={this.state.markedDates}
-                    onDayPress={(day) => {
-                        console.log('selected day', day)
-                        this.setState({ day: moment(day).format('YYYY-MM-DD') })
-                        this.setMarkedDates(day.dateString)
-                    }}
-                    onDayLongPress={(day) => {
-                        console.log('selected day', day)
-                        this.setState({ day: moment(day).format('YYYY-MM-DD') })
-                    }}
-                    monthFormat={'MMMM yyyy'}
+                        markedDates={this.state.markedDates}
+                        onDayPress={(day) => {
+                            console.log('selected day', day)
+                            this.setState({ day: moment(day.dateString).format('YYYY-MM-DD') })
+                            this.setMarkedDates(day.dateString)
+                        }}
+                        onDayLongPress={(day) => {
+                            console.log('selected day', day)
+                            this.setState({ day: moment(day.dateString).format('YYYY-MM-DD') })
+                        }}
+                        monthFormat={'MMMM yyyy'}
 
-                /></View>
-                <View>
-                    <Text onPress={this.startHourTimePicker} style={st.heading2}> Select start time </Text>
-                </View>
-                <View>
-                    <Text onPress={this.endHourTimePicker} style={st.heading2}> Select end time </Text>
+                    />
                 </View>
 
-                <View>
-                    <Button title='Add' onPress={() => this.props.setSchedule(this.state)} />
+                <View style={{ flex: 1 }}>
+                    <View style={{ borderTopWidth: 2, borderTopColor: '#dfe6e9', marginTop: 15, flexDirection: 'row', padding: 20 }}>
+                        <View style={{ borderWidth: 2, borderColor: '#E88D72', borderRadius: 10, flex: 1, marginRight: 5 }}>
+                            {this.state.startHour == null && (
+                                <Text onPress={this.startHourTimePicker} style={st.heading2}> Start Hour </Text>
+                            )}
+                            {this.state.startHour !== null && (
+                                <Text onPress={this.startHourTimePicker} style={st.heading2}> {moment(this.state.startHour).format('hh:mm')} </Text>
+                            )}
+                        </View>
+                        <View style={{ borderWidth: 2, borderColor: '#E88D72', borderRadius: 10, flex: 1 }}>
+                            {this.state.endHour == null && (
+                                <Text onPress={this.endHourTimePicker} style={st.heading2}> End Hour </Text>
+                            )}
+                            {this.state.endHour !== null && (
+                                <Text onPress={this.endHourTimePicker} style={st.heading2}> {moment(this.state.endHour).format('hh:mm')} </Text>
+                            )}
+                        </View>
+                    </View>
+
+                    <View style={{ borderTopWidth: 2, borderTopColor: '#dfe6e9', alignItems: 'center', justifyContent: 'center', flex: 1, paddingTop: 25 }}>
+                        {this.state.day && (
+                            <View style={{flexDirection:'row', marginBottom:20}}>
+                                <Icon2 style={{ paddingRight: 10, color: '#7f8c8d' }} name="calendar" size={30} />
+                                <Text style={{ fontSize: 20, textAlign:'left' }}>{moment(this.state.day).format('LL')}</Text>
+                            </View>)}
+                        {this.state.endHour && this.state.startHour && (
+                            <View style={{flexDirection:'row'}}>
+                                <Icon2 style={{ paddingRight: 10, color: '#7f8c8d' }} name="clock-outline" size={30} />
+                                <Text style={{ fontSize: 20, textAlign:'left' }}>{moment(this.state.startHour).format('hh:mm a')} - {moment(this.state.endHour).format('hh:mm a')}</Text>
+                            </View>
+                        )}
+                        <Text></Text>
+                    </View>
+
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', marginBottom: 20 }}>
+                        <TouchableOpacity
+                            style={st.btn}
+                            onPress={() => this.props.setSchedule(this.state)}>
+                            <Text style={st.btnText}>Add Availability</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         );
