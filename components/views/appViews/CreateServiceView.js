@@ -22,7 +22,7 @@ class CreateServiceView extends Component {
     super(props);
     this.state = {
       serviceName: "",
-      serviceCategory: "",
+      serviceCategory: "LM",
       serviceDescription: "",
       city: "",
       priceHr: 0,
@@ -48,13 +48,12 @@ class CreateServiceView extends Component {
         .then(response => response.json())
         .then(responseJson => {
           fetch(
-            `http://localhost:8080/api/createService/?sellerId=${id}&sellerName=${responseJson.name}&serviceName=${serviceName}&serviceCategory=${serviceCategory}&serviceDescription=${serviceDescription}&city=${city}&minPrice=${minPrice}&maxPrice=${maxPrice}&priceHr=${priceHr}`
+            `http://localhost:8080/api/createService/?sellerId=${id}&sellerName=${responseJson.name}&serviceName=${serviceName}&serviceCategory=${serviceCategory}&serviceDescription=${serviceDescription}&locationId=${responseJson.locationId}&minPrice=${minPrice}&maxPrice=${maxPrice}&priceHr=${priceHr}`
           )
             .then(response => response.json())
             .then(responseJson => {
-              alert("Service created!");
-              this.state.photo ? this.uploadImage(responseJson.serviceId) : null;
-              this.props.navigation.navigate('Home');
+              this.state.photo ? this.uploadImage(responseJson.serviceId) : this.props.loadAndReturn();
+              
             })
             .catch(error => {
               console.error(error);
@@ -112,6 +111,8 @@ class CreateServiceView extends Component {
               fieldType: "photo",
               fieldValue: downloadUrl,
             }),
+          }).then(() => {
+            this.props.loadAndReturn();
           });
         })
       });
@@ -140,96 +141,87 @@ class CreateServiceView extends Component {
 
     return (
       <ScrollView style={{ flex: 1 }}>
-        <View style={{ alignItems: "center", }}>
-          {
-            this.state.photo ?
-              <Image
-                source={{ uri: this.state.photo.image }}
-                style={{
-                  padding: 10,
-                  height: this.state.photo.imageHeight / 2,
-                  width: this.state.photo.imageWidth / 2,
-                }}
-              />
-              : null
-          }
-        </View>
-        <View style={{
-          marginTop: 30, marginLeft: 30, marginRight: 30,
-          marginBottom: 30
-        }}>
-          <Text style={{ fontSize: 20 }}>Service Name </Text>
-          <TextInput
-            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
-            type="text"
-            selectionColor={"#1D8ECE"}
-            underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
-            onChangeText={text => this.setState({ serviceName: text })}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-          />
-        </View>
-        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
-          <Text style={{ fontSize: 20 }}>Service Category </Text>
-          <Picker
-            style={{ height: 50, width: 350 }}
-            selectedValue={this.state.serviceCategory}
-            onValueChange={(itemValue, itemIndex) =>
-              this.setState({ serviceCategory: itemValue })}
-          >
-            <Picker.Item label="Lawn Mowing" value="LM" />
-            <Picker.Item label="Handiman" value="HM" />
-            <Picker.Item label="Snow Shoveling" value="SS" />
-          </Picker>
-        </View>
-        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 20 }}>
-          <Text style={{ fontSize: 20 }}>City </Text>
-          <TextInput
-            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
-            type="text"
-            selectionColor={"#1D8ECE"}
-            underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
-            onChangeText={text => this.setState({ city: text })}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-          />
-        </View>
-        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
-          <Text style={{ fontSize: 20 }}>Price/hr ($) </Text>
-          <TextInput
-            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
-            type="number"
-            selectionColor={"#1D8ECE"}
-            underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
-            onChangeText={num => this.setState({ priceHr: num })}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-            keyboardType="numeric"
-          />
-        </View>
-        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
-          <Text style={{ fontSize: 20 }}>Service Description </Text>
-          <TextInput
-            style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
-            type="text"
-            selectionColor= "#1D8ECE"
-            underlineColorAndroid={isFocused ?  "#1D8ECE" : 'lightgrey'}
-            onChangeText={text => this.setState({ serviceDescription: text })}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-          />
-        </View>
+        <View style={{ flex: 1 }}>
+          <View style={{ alignItems: "center", }}>
+            {
+              this.state.photo ?
+                <Image
+                  source={{ uri: this.state.photo.image }}
+                  style={{
+                    padding: 10,
+                    height: this.state.photo.imageHeight / 2,
+                    width: this.state.photo.imageWidth / 2,
+                  }}
+                />
+                : null
+            }
+          </View>
+          <View style={{
+            marginTop: 30, marginLeft: 30, marginRight: 30,
+            marginBottom: 30
+          }}>
+            <Text style={{ fontSize: 20 }}>Service Name </Text>
+            <TextInput
+              style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
+              type="text"
+              selectionColor={"#1D8ECE"}
+              underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
+              onChangeText={text => this.setState({ serviceName: text })}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+            />
+          </View>
+          <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+            <Text style={{ fontSize: 20 }}>Service Category </Text>
+            <Picker
+              style={{ height: 50, width: 350 }}
+              selectedValue={this.state.serviceCategory}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setState({ serviceCategory: itemValue })}
+            >
+              <Picker.Item label="Lawn Services" value="LM" />
+              <Picker.Item label="Handyman Services" value="HM" />
+              <Picker.Item label="Snow Removal" value="SR" />
+              <Picker.Item label="Cleaning Services" value="CL" />              
+            </Picker>
+          </View>
+          <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+            <Text style={{ fontSize: 20 }}>Price/hr ($) </Text>
+            <TextInput
+              style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
+              type="number"
+              selectionColor={"#1D8ECE"}
+              underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
+              onChangeText={num => this.setState({ priceHr: num })}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              keyboardType="numeric"
+            />
+          </View>
+          <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+            <Text style={{ fontSize: 20 }}>Service Description </Text>
+            <TextInput
+              style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
+              type="text"
+              selectionColor="#1D8ECE"
+              underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
+              onChangeText={text => this.setState({ serviceDescription: text })}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              placeholder="Add some details about your service"
+            />
+          </View>
 
-        <View style={{ marginLeft: 80, marginRight: 80, marginBottom: 30 }}>
-          <TouchableOpacity
-            style={st.btnUpload}
-            onPress={() => this.handleChoosePhoto()}>
-            <Icon name="upload" size={32} color="#1D8ECE" style={{paddingTop:5, paddingLeft:5, paddingRight:20}}/>            
-            <Text style={st.btnText1}>Upload photo</Text>
-          </TouchableOpacity>
+          <View style={{ marginLeft: 80, marginRight: 80, marginBottom: 30 }}>
+            <TouchableOpacity
+              style={st.btnUpload}
+              onPress={() => this.handleChoosePhoto()}>
+              <Icon name="upload" size={32} color="#1D8ECE" style={{ paddingTop: 5, paddingLeft: 5, paddingRight: 20 }} />
+              <Text style={st.btnText1}>Upload photo</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <View style={{ marginLeft: 30, marginRight: 30, marginBottom:20 }}>
+        <View style={{ justifyContent:'flex-end', marginLeft: 30, marginRight: 30, marginBottom: 20 }}>
           <TouchableOpacity
             style={st.btnPrimary}
             onPress={() => this.createService(this.state)}>

@@ -12,14 +12,18 @@ import StarRating from "react-native-star-rating";
 import LottieView from 'lottie-react-native';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
+import Modal from "react-native-modal";
 
 class ServiceView extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isCancelServiceModalVisible: false
+    }
   };
 
   componentDidMount() {
-    console.log(this.props.ratings);
+    console.log(this.props.location);
   }
 
   getRatings = () => {
@@ -42,12 +46,62 @@ class ServiceView extends Component {
           </View>);
       }))
     } else {
-      console.log('she null');
-      return null;
+      return (
+        <View>
+          <Text>There are no ratings for this service yet</Text>
+        </View>
+      );
     }
 
   }
 
+  getSellerRating = () => {
+    if (this.props.ratings !== null) {
+      var totalRating = 0;
+      var ratingCount = 0;
+      (this.props.ratings.map((rating) => {
+        totalRating += parseInt(rating.rating);
+        ratingCount++;
+      }))
+      return (totalRating / ratingCount)
+    } else {
+      return 5
+    }
+  }
+
+  getServiceCategory = () => {
+    if (this.props.serviceCategory == 'LM') {
+      return "Lawn Services"
+    } else if (this.props.serviceCategory == 'SR') {
+      return "Snow Removal Services"
+    } else if (this.props.serviceCategory == 'CL') {
+      return "Cleaning Services"
+    } else if (this.props.serviceCategory == 'HM') {
+      return "Handyman Services"
+    }
+  }
+
+  toggleCancelService = () => {
+    this.setState({ isCancelServiceModalVisible: !this.state.isCancelServiceModalVisible });
+  }
+
+  confirmCancelService = () => {
+    this.setState({ isCancelServiceModalVisible: !this.state.isCancelServiceModalVisible });
+
+    fetch('http://localhost:8080/api/cancelService?id=' + this.props.serviceId, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    this.props.loadServices();
+    this.props.goBack();
+  }
 
   render() {
     console.log(this.props);
@@ -74,13 +128,13 @@ class ServiceView extends Component {
                 {this.props.serviceName}
               </Text>
               <Text style={{ fontSize: 15, color: '#7f8c8d' }}>
-                {this.props.serviceCategory} Service
+                {this.getServiceCategory()}
                 </Text>
               <View style={{ width: 100, paddingTop: 10 }}>
                 <StarRating
                   disabled={true}
                   maxStars={5}
-                  rating={4.5}
+                  rating={this.getSellerRating()}
                   starSize={16}
                   fullStarColor="orange"
                   emptyStarColor="orange"
@@ -115,7 +169,7 @@ class ServiceView extends Component {
                 <View style={{ flexDirection: 'row' }}>
                   <View style={{ flex: 1, alignItems: 'center' }}>
                     <Icon2 color='#E88D72' name="map-marker-radius" size={45} />
-                    <Text style={{ fontSize: 20 }}>{this.props.city}</Text>
+            <Text style={{ fontSize: 20 }}>{this.props.city}</Text>
                   </View>
                   <View style={{ flex: 1, alignItems: 'center' }}>
                     <Icon color='#E88D72' name="dollar" size={40} />
@@ -132,19 +186,19 @@ class ServiceView extends Component {
               <ScrollView style={{ marginLeft: 10 }}>{this.getRatings()}</ScrollView>
             </View>
 
-            <View style={{ flex: .5, flexDirection:'row', marginHorizontal:10 }}>
+            <View style={{ flex: .5, flexDirection: 'row', marginHorizontal: 10 }}>
 
-              <View style={{flex:1, marginRight:5}}>
+              <View style={{ flex: 1, marginRight: 5 }}>
                 <TouchableOpacity
-                  style={{backgroundColor:'#E88D72', padding:10, borderRadius:5}}
-                  onPress={() => this.createService()}>
+                  style={st.btnPrimary}
+                  onPress={() => this.toggleCancelService()}>
                   <Text style={st.btnText}>Cancel</Text>
                 </TouchableOpacity>
               </View>
 
-              <View style={{flex:1}}>
+              <View style={{ flex: 1 }}>
                 <TouchableOpacity
-                  style={{backgroundColor:'#E88D72', padding:10, borderRadius:5}}
+                  style={st.btnPrimary}
                   onPress={() => this.props.editService()}>
                   <Text style={st.btnText}>Edit</Text>
                 </TouchableOpacity>
@@ -153,6 +207,29 @@ class ServiceView extends Component {
             </View>
 
           </View>
+
+          <Modal isVisible={this.state.isCancelServiceModalVisible}>
+            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20 }}>
+                <View style={{ flex: 1, flexDirection: 'column' }}>
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Confirm Cancel Order</Text>
+                  <Text style={{ textAlign: 'center', fontSize: 20, padding: 20 }}>Are you sure?</Text>
+                  <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
+                    <TouchableOpacity
+                      style={{ flex: 1, backgroundColor: '#bf745e', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomLeftRadius: 20 }}
+                      onPress={() => this.toggleCancelService()}>
+                      <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>NO</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ flex: 1, backgroundColor: '#E88D72', justifyContent: 'center', alignItems: 'center', height: 55, borderBottomRightRadius: 20, }}
+                      onPress={() => this.confirmCancelService()}>
+                      <Text style={{ textAlign: 'center', fontSize: 19, fontWeight: 'bold', color: '#fff' }}>YES</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Modal>
 
         </View>
       );

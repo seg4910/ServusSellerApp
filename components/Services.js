@@ -50,7 +50,10 @@ class Services extends Component {
 
     selectService = (id) => {
         if (id !== 0) {
-            this.props.navigation.navigate("Service", { selectedService: id });
+            this.props.navigation.navigate("Service", { 
+                selectedService: id,
+                loadServices: this.loadServices 
+            });
         }
     };
 
