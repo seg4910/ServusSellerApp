@@ -72,9 +72,10 @@ class EditServiceView extends Component {
             onValueChange={(itemValue, itemIndex) =>
               this.setState({ serviceCategory: itemValue })}
           >
-            <Picker.Item label="Lawn Mowing" value="LM" />
-            <Picker.Item label="Handyman" value="HM" />
-            <Picker.Item label="Snow Shoveling" value="SS" />
+              <Picker.Item label="Lawn Services" value="LM" />
+              <Picker.Item label="Handyman Services" value="HM" />
+              <Picker.Item label="Snow Removal" value="SR" />
+              <Picker.Item label="Cleaning Services" value="CL" /> 
           </Picker>
         </View>
 

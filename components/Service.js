@@ -37,7 +37,7 @@ class Service extends Component {
                   this.setState({sellerName: this.state.serviceInfo[0].sellerName});
                   this.setState({price: this.state.serviceInfo[0].priceHr});
                   this.setState({serviceCategory: this.state.serviceInfo[0].serviceCategory});
-                  this.setState({city: this.state.serviceInfo[0].city})
+                  this.setState({locationId: this.state.serviceInfo[0].locationId})
                 
                 fetch(`http://localhost:8080/api/getAccountInfo?type=${'sellers'}&id=${this.state.serviceInfo[0].sellerID}`)
                 .then((response) => response.json())
@@ -53,7 +53,15 @@ class Service extends Component {
                     this.setState({
                         ratings: responseJson.ratingInfo
                     })
-                })  
+                }) 
+                
+                fetch('http://localhost:8080/api/getLocation?id=' + this.state.serviceInfo[0].locationId)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    this.setState({
+                        city: responseJson.locationInfo[0].city
+                    })
+                })                  
               
               
               } else {
@@ -69,12 +77,20 @@ class Service extends Component {
         });
     }  
     
+    loadServices = () => {
+      this.props.navigation.state.params.loadServices();
+    }
+
     editService = (id) => {
       this.props.navigation.navigate('EditService', {
-        id: this.state.serviceId
+        id: this.state.serviceId,
+        loadServices: this.loadServices
       })
     }
 
+    goBack = () => {
+      this.props.navigation.goBack();
+    }
 
     render() {
         const { navigation } = this.props;
@@ -84,14 +100,15 @@ class Service extends Component {
           serviceName = {this.state.serviceName}
           sellerName = {this.state.sellerName}
           serviceDescription = {this.state.serviceDescription}
-          minPrice = {this.state.minPrice}
-          maxPrice = {this.state.maxPrice}
+          serviceId = {this.state.serviceId}
           serviceCategory = {this.state.serviceCategory}
           ratings = {this.state.ratings}
-          city = {this.state.city}
           price = {this.state.price}
           sellerPhoto = {this.state.sellerPhoto}
           editService = {this.editService}
+          loadServices = {this.loadServices}
+          goBack = {this.goBack}
+          city = {this.state.city}
           />
         );
     }

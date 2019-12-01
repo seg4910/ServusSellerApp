@@ -59,7 +59,7 @@ class EditService extends Component {
             )
                 .then(response => response.json())
                 .then(responseJson => {
-                    alert("Service updated!")
+                    this.props.navigation.state.params.loadServices()
                     this.props.navigation.navigate('Services')
                 })
                 .catch(error => {

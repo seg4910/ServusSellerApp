@@ -7,11 +7,17 @@ class CreateService extends Component {
         super(props);
     }
 
+    loadAndReturn = () => {
+        this.props.navigation.state.params.loadServices();
+        this.props.navigation.goBack();
+    }
+
     render() {
         return (
             // enter email (sign in/regsiter)
             <CreateServiceView
                 {...this.props}
+                loadAndReturn = {this.loadAndReturn}
             />
         )
     }

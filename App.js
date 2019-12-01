@@ -27,6 +27,7 @@ import {
   DrawerItems
 } from "react-navigation";
 
+import Avatar from './components/Avatar.js';
 import Home from './components/Home.js';
 import Account from './components/Account.js';
 import ViewOrders from './components/ViewOrders.js';
@@ -123,10 +124,8 @@ const DrawerNavigatorExample = createDrawerNavigator(
             justifyContent: "center"
           }}
         >
-          <Image
-            source={require("./image/avatar1.jpg")}
-            style={{ height: 120, width: 120, borderRadius: 60 }}
-          />
+          <Avatar />
+          
         </View>
         <ScrollView>
           <DrawerItems {...props} />
