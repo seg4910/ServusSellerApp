@@ -104,9 +104,9 @@ class EditServiceView extends Component {
             value={this.state.serviceDescription}
           />
         </View>
-        <View style={{ marginLeft: 30, marginRight: 40 }}>
+        <View style={{ marginLeft: 30, marginRight: 30 }}>
           <TouchableOpacity
-            style={st.btn}
+            style={st.btnPrimary}
             onPress={() => this.props.updateService(this.state)}>
             <Text style={st.btnText}>Update Service</Text>
           </TouchableOpacity>

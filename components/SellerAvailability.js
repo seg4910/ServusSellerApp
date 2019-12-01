@@ -95,9 +95,11 @@ class SellerAvailability extends Component {
           onDayChange={(day) => { this.selectDay(day) }}
         />
 
-        <View style={{ justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
+        <View style={{
+          marginLeft: 30, marginRight: 30, marginBottom: 20
+        }}>
           <TouchableOpacity
-            style={st.btn}
+            style={st.btnPrimary}
             onPress={this.addAvailability}>
             <Text style={st.btnText}>Add Availability</Text>
           </TouchableOpacity>

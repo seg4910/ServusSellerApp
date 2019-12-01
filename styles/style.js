@@ -92,11 +92,24 @@ module.exports = StyleSheet.create({
 
   inputIcon: { position: "absolute", top: 8, left: 37 },
   inputContainer: { marginTop: 10 },
+  btnPrimary: {
+    height: 45,
+    borderWidth: 2,
+    borderColor: "#E88D72",
+    justifyContent: "center",
+  },
+  btnUpload: {
+    flexDirection: "row",
+    height: 45,
+    borderWidth: 2,
+    borderColor: "#1D8ECE",
+    borderRadius:5
+  },
   btn: {
     width: WIDTH - 55,
+    backgroundColor: "#E88D72",
     height: 45,
     borderRadius: 25,
-    backgroundColor: "#E88D72",
     justifyContent: "center",
     marginTop: 20
   },
@@ -108,7 +121,15 @@ module.exports = StyleSheet.create({
     justifyContent: "center",
     marginTop: 20
   },
+  btnText1: {
+    paddingTop: 7,
+    fontSize: 19,
+    textAlign: "center",
+    fontWeight: "bold",
+    paddingLeft:15
+  },
   btnText: {
+    textTransform: "uppercase",
     color: "#543855",
     fontSize: 19,
     textAlign: "center",
