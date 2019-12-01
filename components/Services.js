@@ -26,7 +26,7 @@ class Services extends Component {
     }
 
     loadServices = () => {
-        this.setState({servicePreviews:undefined});
+        this.setState({ servicePreviews: undefined });
         AsyncStorage.getItem('userId', (err, result) => {
             fetch(`http://localhost:8080/api/getSellerServicePreviews?id=${result}`)
                 .then(response => response.json())
@@ -57,32 +57,34 @@ class Services extends Component {
     render() {
         if (this.state.servicePreviews !== undefined) {
             return (
-                <View style={{ flex: 1, justifyContent: 'center', alignItems:'center' }}>
-                    {this.state.servicePreviews && (
-                        <ScrollView contentContainerStyle={{}}>
-                            <ServicePreview
-                                style={{ }}
-                                navigation={this.props.navigation}
-                                selectService={this.selectService}
-                                servicePreviews={this.state.servicePreviews}
-                            />
-                        </ScrollView>
-                    )}
-                    {!this.state.servicePreviews && (
-                        <View style={{ flex: 1, justifyContent: 'center' }}>
-                            <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 150 }}>
-                                <Icon2 style={{ alignSelf: 'center', color: '#E88D72' }} name="file-alert-outline" size={100} />
-                                <Text style={{ fontSize: 22, paddingTop: 15 }}>NO SERVICES</Text>
-                                <Text style={{ fontSize: 16, paddingTop: 10 }}>You don't have any services</Text>
+                <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        {this.state.servicePreviews && (
+                            <ScrollView contentContainerStyle={{}}>
+                                <ServicePreview
+                                    style={{}}
+                                    navigation={this.props.navigation}
+                                    selectService={this.selectService}
+                                    servicePreviews={this.state.servicePreviews}
+                                />
+                            </ScrollView>
+                        )}
+                        {!this.state.servicePreviews && (
+                            <View style={{ flex: 1, justifyContent: 'center' }}>
+                                <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: 150 }}>
+                                    <Icon2 style={{ alignSelf: 'center', color: '#E88D72' }} name="file-alert-outline" size={100} />
+                                    <Text style={{ fontSize: 22, paddingTop: 15 }}>NO SERVICES</Text>
+                                    <Text style={{ fontSize: 16, paddingTop: 10 }}>You don't have any services</Text>
+                                </View>
                             </View>
-                        </View>
-                    )}
+                        )}
+                    </View>
 
-                    <View style={{ justifyContent: 'flex-end', marginBottom: 20, alignItems: 'center' }}>
+                    <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 20 }}>
                         <TouchableOpacity
-                            style={st.btn}
+                            style={st.btnPrimary}
                             onPress={() => this.createService()}>
-                            <Text style={st.btnText}>CREATE SERVICE</Text>
+                            <Text style={st.btnText}>ADD SERVICE</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -130,9 +130,9 @@ class SchedulingView extends Component {
                         <Text></Text>
                     </View>
 
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end', marginBottom: 20 }}>
+                    <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 20 }}>
                         <TouchableOpacity
-                            style={st.btn}
+                            style={st.btnPrimary}
                             onPress={() => this.props.setSchedule(this.state)}>
                             <Text style={st.btnText}>Add Availability</Text>
                         </TouchableOpacity>

@@ -11,7 +11,7 @@ import {
   Image,
   AsyncStorage
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/Feather";
 import ImagePicker from 'react-native-image-picker';
 import firebase from 'react-native-firebase';
 const screenWidth = Dimensions.get('screen').width;
@@ -80,14 +80,14 @@ class CreateServiceView extends Component {
           Image.getSize(imgUri, (width, height) => {
             const scaleFactor = width / screenWidth;
             const imageHeight = height / scaleFactor;
-              this.setState({
-                photo: {
-                  image: imgUri,
-                  path: imgPath,
-                  imageHeight: imageHeight,
-                  imageWidth: width,
-                }
-              });
+            this.setState({
+              photo: {
+                image: imgUri,
+                path: imgPath,
+                imageHeight: imageHeight,
+                imageWidth: width,
+              }
+            });
           });
         }
       }
@@ -100,19 +100,19 @@ class CreateServiceView extends Component {
     try {
       imgRef.putFile(this.state.photo.path).then((file) => {
         imgRef.getDownloadURL().then((downloadUrl) => {
-            fetch('http://localhost:8080/api/editField', {
-              method: 'POST',
-              headers: {
-                 Accept: 'application/json',
-                 'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                 type: "services",
-                 userId: serviceId,
-                 fieldType: "photo",
-                 fieldValue: downloadUrl,
-              }),
-             });
+          fetch('http://localhost:8080/api/editField', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: "services",
+              userId: serviceId,
+              fieldType: "photo",
+              fieldValue: downloadUrl,
+            }),
+          });
         })
       });
     } catch {
@@ -146,14 +146,14 @@ class CreateServiceView extends Component {
               <Image
                 source={{ uri: this.state.photo.image }}
                 style={{
-                  padding:10,
+                  padding: 10,
                   height: this.state.photo.imageHeight / 2,
                   width: this.state.photo.imageWidth / 2,
                 }}
-                  />
-            : null
+              />
+              : null
           }
-        </View>        
+        </View>
         <View style={{
           marginTop: 30, marginLeft: 30, marginRight: 30,
           marginBottom: 30
@@ -162,8 +162,8 @@ class CreateServiceView extends Component {
           <TextInput
             style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="text"
-            selectionColor={'teal'}
-            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
+            selectionColor={"#1D8ECE"}
+            underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
             onChangeText={text => this.setState({ serviceName: text })}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
@@ -182,13 +182,13 @@ class CreateServiceView extends Component {
             <Picker.Item label="Snow Shoveling" value="SS" />
           </Picker>
         </View>
-        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
+        <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 20 }}>
           <Text style={{ fontSize: 20 }}>City </Text>
           <TextInput
             style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="text"
-            selectionColor={'teal'}
-            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
+            selectionColor={"#1D8ECE"}
+            underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
             onChangeText={text => this.setState({ city: text })}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
@@ -199,11 +199,12 @@ class CreateServiceView extends Component {
           <TextInput
             style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="number"
-            selectionColor={'teal'}
-            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
+            selectionColor={"#1D8ECE"}
+            underlineColorAndroid={isFocused ? "#1D8ECE" : 'lightgrey'}
             onChangeText={num => this.setState({ priceHr: num })}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
+            keyboardType="numeric"
           />
         </View>
         <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 30 }}>
@@ -211,21 +212,26 @@ class CreateServiceView extends Component {
           <TextInput
             style={{ fontSize: 17, height: 40, paddingLeft: 5 }}
             type="text"
-            selectionColor={'teal'}
-            underlineColorAndroid={isFocused ? 'teal' : 'lightgrey'}
+            selectionColor= "#1D8ECE"
+            underlineColorAndroid={isFocused ?  "#1D8ECE" : 'lightgrey'}
             onChangeText={text => this.setState({ serviceDescription: text })}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
           />
         </View>
 
-        <View style={st.container}>
-          <Button title='Upload photo' onPress={() => this.handleChoosePhoto()}/>
+        <View style={{ marginLeft: 80, marginRight: 80, marginBottom: 30 }}>
+          <TouchableOpacity
+            style={st.btnUpload}
+            onPress={() => this.handleChoosePhoto()}>
+            <Icon name="upload" size={32} color="#1D8ECE" style={{paddingTop:5, paddingLeft:5, paddingRight:20}}/>            
+            <Text style={st.btnText1}>Upload photo</Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={{ marginLeft: 30, marginRight: 40 }}>
+        <View style={{ marginLeft: 30, marginRight: 30, marginBottom:20 }}>
           <TouchableOpacity
-            style={st.btn}
+            style={st.btnPrimary}
             onPress={() => this.createService(this.state)}>
             <Text style={st.btnText}>CREATE SERVICE</Text>
           </TouchableOpacity>

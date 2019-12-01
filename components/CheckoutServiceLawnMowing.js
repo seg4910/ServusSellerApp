@@ -199,7 +199,7 @@ class CheckoutServiceLawnMowing extends Component {
                 Selected Size: {this.state.lawnSize}
               </Text>
               <TouchableOpacity
-                style={st.btn}
+                style={st.btnPrimary}
                 onPress={() => this.continueToPayment()}
               >
                 <Text style={st.btnText}>Continue To Payment</Text>
