@@ -47,7 +47,7 @@ class EditServiceView extends Component {
     const { isFocused } = this.state;
     const { onFocus, onBlur } = this.props;
     return (
-      <ScrollView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <View style={{
           marginTop: 30, marginLeft: 30, marginRight: 30,
           marginBottom: 30
@@ -105,14 +105,14 @@ class EditServiceView extends Component {
             value={this.state.serviceDescription}
           />
         </View>
-        <View style={{ marginLeft: 30, marginRight: 30 }}>
+        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
           <TouchableOpacity
             style={st.btnPrimary}
             onPress={() => this.props.updateService(this.state)}>
             <Text style={st.btnText}>Update Service</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     );
 
   }

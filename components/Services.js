@@ -83,7 +83,7 @@ class Services extends Component {
                         )}
                     </View>
 
-                    <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 20 }}>
+                    <View style={{ marginLeft: 30, marginRight: 30, marginBottom: 20, marginTop:20 }}>
                         <TouchableOpacity
                             style={st.btnPrimary}
                             onPress={() => this.createService()}>

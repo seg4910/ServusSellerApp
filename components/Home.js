@@ -217,7 +217,7 @@ class Home extends Component {
 
         {checkActiveOrCompletep && (
           <View style={{
-            paddingBottom: 40, shadowColor: 'black',
+            paddingBottom: 20, shadowColor: 'black',
             shadowOffset: {
               width: 0,
               height: 3
@@ -225,6 +225,7 @@ class Home extends Component {
             shadowRadius: 5,
             shadowOpacity: 1.0,
             elevation: 5,
+            backgroundColor:'#f5dcd5'
 
           }}>
             {!this.getOrders('COMPLETEP').every(this.isUndefined) && (
@@ -243,7 +244,7 @@ class Home extends Component {
         )}
 
         {!this.getOrders('ACCEPTED').every(this.isUndefined) && (
-          <View>
+          <View style={{paddingBottom:20}}>
             <Text style={{ margin: 20, marginBottom: 10, fontWeight: 'bold', fontSize: 25 }}>Upcoming Orders</Text>
             {this.getOrders('ACCEPTED')}
           </View>
