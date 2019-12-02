@@ -3,7 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity
+    TouchableOpacity,
+    Image
 } from "react-native";
 import Moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
@@ -51,6 +52,7 @@ class Order extends Component {
         fetch('http://localhost:8080/api/viewOrder?id=' + orderId)
             .then((response) => response.json())
             .then((responseJson) => {
+                console.log(responseJson.order);
                 this.setState({
                     orderInfo: responseJson.order
                 }, () => {
@@ -60,6 +62,16 @@ class Order extends Component {
                             this.setState({
                                 buyerInfo: responseJson
                             })
+                        
+                            fetch('http://localhost:8080/api/getLocation?id=' + responseJson.locationId)
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+                                var fullAddress = responseJson.locationInfo[0].streetNumber + ' ' + responseJson.locationInfo[0].streetName + ', ' +responseJson.locationInfo[0].city + ' ' + responseJson.locationInfo[0].province
+                                this.setState({
+                                    fullAddress: fullAddress
+                                })
+
+                            });
                         });
 
                     const currentTime = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -258,13 +270,20 @@ class Order extends Component {
     render() {
         const { navigation } = this.props;
         let duration = null;
+        let estCost = null;
         if (this.state.orderInfo) {
             if (this.state.orderInfo[0].size == 'SM') {
                 duration = '0 - 1 Hours'
+                estCost = 1*this.state.orderInfo[0].price;
             } else if (this.state.orderInfo[0].size == 'MD') {
                 duration = '1 - 2 Hours'
+                estCost = 1.5*this.state.orderInfo[0].price;
             } else if (this.state.orderInfo[0].size == 'LG') {
                 duration = '2 - 3 Hours'
+                estCost = 2.5*this.state.orderInfo[0].price;
+            } else if (this.state.orderInfo[0].size == 'XL') {
+                duration = '4+ Hours'
+                estCost = 4*this.state.orderInfo[0].price;
             }
         }
 
@@ -296,32 +315,58 @@ class Order extends Component {
 
                         </View>
 
-                        <View style={{ paddingBottom: 25, borderBottomColor: '#dfe6e9', borderBottomWidth: 2 }}>
-                            <View style={{ marginBottom: 10 }}>
-                                <Text style={{ fontSize: 24 }}>{this.state.buyerInfo.name}</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                <Icon2 style={{ paddingRight: 10, color: '#7f8c8d' }} name="calendar" size={25} />
-                                <Text style={{ fontSize: 20 }}>{Moment(this.state.orderInfo[0].dateScheduled).format('MMMM Do YYYY')}</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                <Icon2 style={{ paddingRight: 10, color: '#7f8c8d' }} name="clock-outline" size={25} />
-                                <Text style={{ fontSize: 20 }}>{Moment(this.state.orderInfo[0].dateScheduled).format('hh:mm a')}</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                <Icon2 style={{ paddingRight: 10, color: '#7f8c8d' }} name="map-marker" size={25} />
-                                <Text style={{ fontSize: 20 }}>Location goes here</Text>
+                        <View style={{ paddingBottom: 25, borderBottomColor: '#dfe6e9', borderBottomWidth: 2, marginBottom:10}}>
+                            <View style={{flexDirection:'row', marginBottom:30}}>
+                                <View style={{flex:.7}}>
+                                    <Image source={{uri: this.state.buyerInfo.photo}} style={{height:90, width:90, borderRadius: 50}}/>
+                                </View>
+
+                                <View style={{}}>
+                                    <View style={{flex:2, justifyContent:'center', marginBottom:10}}>
+                                        <Text style={{ fontSize: 30 }}>{this.state.buyerInfo.name}</Text>
+                                    </View>
+                            
+                                    <View style={{}}>
+                                        <Text style={{ fontSize: 20, color:'#7f8c8d' }}>{this.state.buyerInfo.email}</Text>
+                                        <Text style={{ fontSize: 20, color: '#7f8c8d' }}>{this.state.buyerInfo.phone}</Text>
+                                    </View>
+                                </View>
                             </View>
 
-                            <View style={{ marginTop: 30 }}>
-                                <Text style={{ fontSize: 20 }}>{this.state.buyerInfo.email}</Text>
-                                <Text style={{ fontSize: 20 }}>{this.state.buyerInfo.phone}</Text>
+                            <View style={{alignContent:'flex-start', alignItems:'flex-start', marginRight:25}}>
+                                <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                    <Icon2 style={{ marginRight:10, color: '#E88D72' }} name="map-marker" size={25} />
+                                    <Text style={{ fontSize: 17 }}>{this.state.fullAddress}</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                    <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="calendar" size={25} />
+                                    <Text style={{ fontSize: 17 }}>{Moment(this.state.orderInfo[0].dateScheduled).format('MMMM Do YYYY')}</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                    <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="clock-outline" size={25} />
+                                    <Text style={{ fontSize: 17 }}>{Moment(this.state.orderInfo[0].dateScheduled).format('hh:mm a')}</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                    <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="timer-sand" size={25} />
+                                    <Text style={{ fontSize: 17 }}>Expected: {duration}</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                                    <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="currency-usd" size={25} />
+                                    <Text style={{ fontSize: 17 }}>Expected: ${estCost} (${this.state.orderInfo[0].price} / Hr)</Text>
+                                </View>
                             </View>
                         </View>
 
                         <View style={{ marginLeft: 20, marginTop: 20 }}>
-                            <Text style={{ fontSize: 20 }}>Duration: {duration}</Text>
+                            <View>
+                                <Text style={{fontSize:14, color:'#7f8c8d'}}>Service Name</Text>
+                                <Text style={{fontSize:18, marginBottom:10}}>{this.state.orderInfo[0].serviceName}</Text>
+                                <Text style={{fontSize:14, color:'#7f8c8d'}}>Note From Buyer</Text>
+                                <Text style={{fontSize:18}}>{this.state.orderInfo[0].note}</Text>
+
+                            </View>
                         </View>
+
 
                         {this.state.orderInfo[0].status == 'PENDING' && (
                             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
@@ -343,9 +388,9 @@ class Order extends Component {
                         )}
 
                         {this.state.orderInfo[0].status == 'ACCEPTED' && this.state.orderActive == true && (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity onPress={() => this.toggleRequestModal('BEGIN')} style={{ borderRadius: 5, backgroundColor: '#E88D72', flex: 1, height: 50, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontWeight: 'bold' }}>BEGIN SERVICE</Text>
+                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', alignContent:'center'}}>
+                                <TouchableOpacity onPress={() => this.toggleRequestModal('BEGIN')} style={st.btnPrimary}>
+                                    <Text style={st.btnText}>BEGIN SERVICE</Text>
                                 </TouchableOpacity>
                             </View>
                         )}
