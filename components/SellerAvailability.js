@@ -3,14 +3,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  Button,
   AsyncStorage,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
+import { Icon } from 'react-native-elements';
 import { Agenda } from 'react-native-calendars';
 import Moment from 'moment';
-import StarRating from "react-native-star-rating";
 
 const fetch = require("node-fetch");
 
@@ -77,8 +75,6 @@ class SellerAvailability extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
-
     return (
       <View style={{ flex: 1 }}>
 
@@ -88,6 +84,7 @@ class SellerAvailability extends Component {
           loadItemsForMonth={this.getDailyShifts.bind(this)}
           renderItem={this.renderItem.bind(this)}
           renderEmptyData={this.renderEmptyDate.bind(this)}
+          renderEmptyDate={this.renderEmptyDate.bind(this)}
           rowHasChanged={this.rowHasChanged.bind(this)}
           // callback that gets called on day press
           onDayPress={(day) => { this.selectDay(day) }}
@@ -127,7 +124,11 @@ class SellerAvailability extends Component {
     this.state.shiftInfo.map((si) => {
       let siDay = Moment(si.day).format('YYYY-MM-DD');
       if (siDay == day) {
-        shifts.push({ startHour: si.startHour, endHour: si.endHour });
+        shifts.push({
+          id: si.id,
+          startHour: si.startHour,
+          endHour: si.endHour,
+        });
       }
     });
     return shifts;
@@ -138,9 +139,22 @@ class SellerAvailability extends Component {
     return (
       <View style={styles.item}>
         <Text style={{ fontSize: 15 }}>Availability</Text>
-        <Text style={{ justifyContent: 'center', fontSize: 27, fontWeight: '200', color: '#636e72' }}>
-          {Moment(item.startHour).format('hh:mm A')} - {Moment(item.endHour).format('hh:mm A')}
-        </Text>
+        <View style={{ display:"flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={{ justifyContent: 'center', fontSize: 27, fontWeight: '200', color: '#636e72' }}>
+            { Moment(item.startHour).format('hh:mm A') } - { Moment(item.endHour).format('hh:mm A') }
+          </Text>
+          <Icon
+            name="delete"
+            size={20}
+            onPress={() => {
+              fetch(`http://localhost:8080/api/deleteShift?shiftId=${item.id}`)
+              .then((response) => response.json())
+              .then((responseJson) => {
+                this.loadData()
+              })
+            }}
+          />
+        </View>
       </View>
     );
   }
@@ -154,7 +168,7 @@ class SellerAvailability extends Component {
   }
 
   rowHasChanged(r1, r2) {
-    return r1.name !== r2.name;
+    return r1 !== r2;
   }
 
 
