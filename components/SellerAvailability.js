@@ -93,7 +93,7 @@ class SellerAvailability extends Component {
         />
 
         <View style={{
-          marginLeft: 30, marginRight: 30, marginBottom: 20
+          marginLeft: 30, marginRight: 30, marginBottom: 20, marginTop:20
         }}>
           <TouchableOpacity
             style={st.btnPrimary}

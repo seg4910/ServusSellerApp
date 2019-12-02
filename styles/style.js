@@ -94,8 +94,8 @@ module.exports = StyleSheet.create({
   inputContainer: { marginTop: 10 },
   btnPrimary: {
     height: 45,
-    width: WIDTH - 55,
-    flex:1,
+    alignSelf:'stretch',
+    marginHorizontal:20,
     borderWidth: 2,
     borderColor: "#E88D72",
     justifyContent: "center",

@@ -62,16 +62,18 @@ class Order extends Component {
                             this.setState({
                                 buyerInfo: responseJson
                             })
-                        
-                            fetch('http://localhost:8080/api/getLocation?id=' + responseJson.locationId)
-                            .then((response) => response.json())
-                            .then((responseJson) => {
-                                var fullAddress = responseJson.locationInfo[0].streetNumber + ' ' + responseJson.locationInfo[0].streetName + ', ' +responseJson.locationInfo[0].city + ' ' + responseJson.locationInfo[0].province
-                                this.setState({
-                                    fullAddress: fullAddress
-                                })
 
-                            });
+                            fetch('http://localhost:8080/api/getLocation?id=' + responseJson.locationId)
+                                .then((response) => response.json())
+                                .then((responseJson) => {
+                                    var fullAddress = responseJson.locationInfo[0].streetNumber + ' ' + responseJson.locationInfo[0].streetName + ', ' + responseJson.locationInfo[0].city
+                                    var shortAddress = responseJson.locationInfo[0].city + ', ' + responseJson.locationInfo[0].postalCode
+                                    this.setState({
+                                        fullAddress: fullAddress,
+                                        shortAddress: shortAddress
+                                    })
+
+                                });
                         });
 
                     const currentTime = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -259,7 +261,7 @@ class Order extends Component {
                 .catch((error) => {
                     console.error(error);
                 });
-        
+
             this.sendNotificationToBuyer(completeTitle, completeBody);
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
@@ -274,24 +276,24 @@ class Order extends Component {
         if (this.state.orderInfo) {
             if (this.state.orderInfo[0].size == 'SM') {
                 duration = '0 - 1 Hours'
-                estCost = 1*this.state.orderInfo[0].price;
+                estCost = 1 * this.state.orderInfo[0].price;
             } else if (this.state.orderInfo[0].size == 'MD') {
                 duration = '1 - 2 Hours'
-                estCost = 1.5*this.state.orderInfo[0].price;
+                estCost = 1.5 * this.state.orderInfo[0].price;
             } else if (this.state.orderInfo[0].size == 'LG') {
                 duration = '2 - 3 Hours'
-                estCost = 2.5*this.state.orderInfo[0].price;
+                estCost = 2.5 * this.state.orderInfo[0].price;
             } else if (this.state.orderInfo[0].size == 'XL') {
                 duration = '4+ Hours'
-                estCost = 4*this.state.orderInfo[0].price;
+                estCost = 4 * this.state.orderInfo[0].price;
             }
         }
 
         return (
             <View style={{ flex: 1 }}>
                 {this.state.buyerInfo && (
-                    <View style={{ flex: 1, padding: 20 }}>
-                        <View style={{ marginBottom: 40, padding: 10, borderBottomColor: '#dfe6e9', borderBottomWidth: 2 }}>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ marginBottom: 20, marginHorizontal: 20, padding: 20, borderBottomColor: '#dfe6e9', borderBottomWidth: 2 }}>
 
                             {this.state.orderInfo[0].status == 'PENDING' && (
                                 <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Order Request</Text>
@@ -315,28 +317,42 @@ class Order extends Component {
 
                         </View>
 
-                        <View style={{ paddingBottom: 25, borderBottomColor: '#dfe6e9', borderBottomWidth: 2, marginBottom:10}}>
-                            <View style={{flexDirection:'row', marginBottom:30}}>
-                                <View style={{flex:.7}}>
-                                    <Image source={{uri: this.state.buyerInfo.photo}} style={{height:90, width:90, borderRadius: 50}}/>
+                        <View style={{ padding: 20, paddingTop: 0, borderBottomColor: '#dfe6e9', borderBottomWidth: 2, marginBottom: 10 }}>
+                            <View style={{ flexDirection: 'row', marginBottom: 30 }}>
+                                <View style={{ flex: .7 }}>
+                                    <Image source={{ uri: this.state.buyerInfo.photo }} style={{ height: 85, width: 85, borderRadius: 50 }} />
                                 </View>
 
                                 <View style={{}}>
-                                    <View style={{flex:2, justifyContent:'center', marginBottom:10}}>
-                                        <Text style={{ fontSize: 30 }}>{this.state.buyerInfo.name}</Text>
+                                    <View style={{ flex: 2, justifyContent: 'center', marginBottom: 10 }}>
+                                        <Text style={{ fontSize: 25 }}>{this.state.buyerInfo.name}</Text>
                                     </View>
-                            
+
                                     <View style={{}}>
-                                        <Text style={{ fontSize: 20, color:'#7f8c8d' }}>{this.state.buyerInfo.email}</Text>
-                                        <Text style={{ fontSize: 20, color: '#7f8c8d' }}>{this.state.buyerInfo.phone}</Text>
+                                        <Text style={{ fontSize: 17, color: '#7f8c8d' }}>{this.state.buyerInfo.email}</Text>
+                                        <Text style={{ fontSize: 17, color: '#7f8c8d' }}>{this.state.buyerInfo.phone}</Text>
                                     </View>
                                 </View>
                             </View>
 
-                            <View style={{alignContent:'flex-start', alignItems:'flex-start', marginRight:25}}>
+                            <View style={{ alignContent: 'flex-start', alignItems: 'flex-start', marginRight: 25 }}>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
-                                    <Icon2 style={{ marginRight:10, color: '#E88D72' }} name="map-marker" size={25} />
-                                    <Text style={{ fontSize: 17 }}>{this.state.fullAddress}</Text>
+                                    <Icon2 style={{ marginRight: 10, color: '#E88D72' }} name="map-marker" size={25} />
+                                    {this.state.orderInfo[0].status == 'ACTIVE' && (
+                                        <Text style={{ fontSize: 17 }}>{this.state.fullAddress}</Text>
+                                    )}
+                                    {this.state.orderInfo[0].status == 'COMPLETEP' && (
+                                        <Text style={{ fontSize: 17 }}>{this.state.fullAddress}</Text>
+                                    )}
+                                    {this.state.orderInfo[0].status == 'ACCEPTED' && (
+                                        <Text style={{ fontSize: 17 }}>{this.state.fullAddress}</Text>
+                                    )}
+                                    {this.state.orderInfo[0].status == 'PENDING' && (
+                                        <Text style={{ fontSize: 17 }}>{this.state.shortAddress}</Text>
+                                    )}
+                                    {this.state.orderInfo[0].status == 'COMPLETE' && (
+                                        <Text style={{ fontSize: 17 }}>{this.state.shortAddress}</Text>
+                                    )}
                                 </View>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="calendar" size={25} />
@@ -348,47 +364,63 @@ class Order extends Component {
                                 </View>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="timer-sand" size={25} />
-                                    <Text style={{ fontSize: 17 }}>Expected: {duration}</Text>
+                                    {this.state.orderInfo[0].status !== 'COMPLETE' && (
+                                        <Text style={{ fontSize: 17 }}>Expected: {duration}</Text>
+                                    )}
+                                    {this.state.orderInfo[0].status == 'COMPLETE' && (
+                                        <Text style={{ fontSize: 17 }}>{this.state.orderInfo[0].actualDuration}</Text>
+                                    )}
                                 </View>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="currency-usd" size={25} />
-                                    <Text style={{ fontSize: 17 }}>Expected: ${estCost} (${this.state.orderInfo[0].price} / Hr)</Text>
+                                    {this.state.orderInfo[0].status !== 'COMPLETE' && (
+                                        <Text style={{ fontSize: 17 }}>Expected: ${estCost} (${this.state.orderInfo[0].price} / Hr)</Text>
+                                    )}
+                                    {this.state.orderInfo[0].status == 'COMPLETE' && (
+                                        <Text style={{ fontSize: 17 }}>${this.state.orderInfo[0].totalCost}</Text>
+                                    )}                                    
                                 </View>
                             </View>
                         </View>
 
-                        <View style={{ marginLeft: 20, marginTop: 20 }}>
+                        <View style={{ marginLeft: 30, marginTop: 15 }}>
                             <View>
-                                <Text style={{fontSize:14, color:'#7f8c8d'}}>Service Name</Text>
-                                <Text style={{fontSize:18, marginBottom:10}}>{this.state.orderInfo[0].serviceName}</Text>
-                                <Text style={{fontSize:14, color:'#7f8c8d'}}>Note From Buyer</Text>
-                                <Text style={{fontSize:18}}>{this.state.orderInfo[0].note}</Text>
+                                <Text style={{ fontSize: 14, color: '#7f8c8d' }}>Service Name</Text>
+                                <Text style={{ fontSize: 18, marginBottom: 10 }}>{this.state.orderInfo[0].serviceName}</Text>
+                                <Text style={{ fontSize: 14, color: '#7f8c8d' }}>Note From Buyer</Text>
+                                <Text style={{ fontSize: 18 }}>{this.state.orderInfo[0].note}</Text>
 
                             </View>
                         </View>
 
 
                         {this.state.orderInfo[0].status == 'PENDING' && (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity onPress={() => this.toggleRequestModal('ACCEPT')} style={{ borderRadius: 5, backgroundColor: '#2ecc71', flex: 1, height: 50, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontWeight: 'bold' }}>ACCEPT</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => this.toggleRequestModal('DECLINE')} style={{ borderRadius: 5, backgroundColor: '#e74c3c', flex: 1, height: 50, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontWeight: 'bold' }}>DECLINE</Text>
-                                </TouchableOpacity>
+                            <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 1 }}>
+                                        <TouchableOpacity onPress={() => this.toggleRequestModal('ACCEPT')} style={st.btnPrimary}>
+                                            <Text style={st.btnText}>ACCEPT</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={{ flex: 1 }}>
+                                        <TouchableOpacity onPress={() => this.toggleRequestModal('DECLINE')} style={st.btnPrimary}>
+                                            <Text style={st.btnText}>DECLINE</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                             </View>
                         )}
 
                         {this.state.orderInfo[0].status == 'ACCEPTED' && this.state.orderActive == false && (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity onPress={() => this.toggleRequestModal('CANCEL')} style={{ borderRadius: 5, backgroundColor: '#e74c3c', flex: 1, height: 50, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontWeight: 'bold' }}>CANCEL</Text>
+                            <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
+                                <TouchableOpacity onPress={() => this.toggleRequestModal('CANCEL')} style={st.btnPrimary}>
+                                    <Text style={st.btnText}>CANCEL</Text>
                                 </TouchableOpacity>
                             </View>
                         )}
 
                         {this.state.orderInfo[0].status == 'ACCEPTED' && this.state.orderActive == true && (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end', alignContent:'center'}}>
+                            <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
                                 <TouchableOpacity onPress={() => this.toggleRequestModal('BEGIN')} style={st.btnPrimary}>
                                     <Text style={st.btnText}>BEGIN SERVICE</Text>
                                 </TouchableOpacity>
@@ -396,9 +428,9 @@ class Order extends Component {
                         )}
 
                         {this.state.orderInfo[0].status == 'ACTIVE' && this.state.orderActive == true && (
-                            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
-                                <TouchableOpacity onPress={() => this.toggleRequestModal('COMPLETEP')} style={{ borderRadius: 5, backgroundColor: '#E88D72', flex: 1, height: 50, margin: 10, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontWeight: 'bold' }}>COMPLETED</Text>
+                            <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
+                                <TouchableOpacity onPress={() => this.toggleRequestModal('COMPLETEP')} style={st.btnPrimary}>
+                                    <Text style={st.btnText}>COMPLETED</Text>
                                 </TouchableOpacity>
                             </View>
                         )}
