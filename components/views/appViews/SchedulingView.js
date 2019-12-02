@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import {
-    TextInput,
-    Picker,
     Text,
     View,
-    Button,
     TimePickerAndroid,
     TouchableOpacity
 } from "react-native";
-import { Calendar, CalendarList, Agenda, Arrow } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 

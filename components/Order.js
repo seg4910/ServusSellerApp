@@ -3,12 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    AsyncStorage,
-    Image,
-    Button,
     TouchableOpacity
 } from "react-native";
-import OrderView from './views/appViews/OrderView.js';
 import Moment from 'moment';
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 import Modal from "react-native-modal";

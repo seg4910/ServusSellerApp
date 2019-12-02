@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Text, View, TouchableOpacity, ImageBackground, Image, TextInput } from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import EnterEmailView from "./views/authViews/EnterEmailView.js";
 
 const fetch = require("node-fetch");
