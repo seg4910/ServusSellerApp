@@ -174,6 +174,9 @@ class Home extends Component {
                   {order.status == 'COMPLETEP' && (
                     <Text style={{ marginTop: 10, fontSize: 16, color: 'green', paddingBottom: 5 }}>COMPLETE</Text>
                   )}
+                  {order.status == 'ACTIVE' && (
+                    <Text style={{ marginTop: 10, fontSize: 16, color: 'green', paddingBottom: 5 }}>ACTIVE</Text>
+                  )}
 
                 </View>
                 <View style={{ alignItems: 'center' }}>

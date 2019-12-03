@@ -56,6 +56,11 @@ class Order extends Component {
                 this.setState({
                     orderInfo: responseJson.order
                 }, () => {
+
+                    var orderDuration = Moment.utc(Moment(this.state.orderInfo[0].timeCompleted, "YYYY-MM-DD HH:mm:ss").diff(Moment(this.state.orderInfo[0].timeStarted, "YYYY-MM-DD HH:mm:ss"))).format("HH:mm:ss");
+                    var totalCost = Math.round((this.state.orderInfo[0].price * Moment.duration(orderDuration).asHours()) * 100) / 100;
+                    this.setState({ orderDuration: orderDuration, totalCost: totalCost })
+
                     fetch('http://localhost:8080/api/getAccountInfo?type=users&id=' + this.state.orderInfo[0].buyerId)
                         .then((response) => response.json())
                         .then((responseJson) => {
@@ -273,6 +278,7 @@ class Order extends Component {
         const { navigation } = this.props;
         let duration = null;
         let estCost = null;
+        let complete = false;
         if (this.state.orderInfo) {
             if (this.state.orderInfo[0].size == 'SM') {
                 duration = '0 - 1 Hours'
@@ -287,38 +293,43 @@ class Order extends Component {
                 duration = '4+ Hours'
                 estCost = 4 * this.state.orderInfo[0].price;
             }
+            if (this.state.orderInfo[0].status == 'COMPLETE' || this.state.orderInfo[0].status == 'COMPLETEP') {
+                complete = true;
+            }
         }
 
         return (
             <View style={{ flex: 1 }}>
                 {this.state.buyerInfo && (
                     <View style={{ flex: 1 }}>
-                        <View style={{ marginBottom: 20, marginHorizontal: 20, padding: 20, borderBottomColor: '#dfe6e9', borderBottomWidth: 2 }}>
+                        <View style={{ marginBottom: 15, padding: 17, borderBottomColor: '#dfe6e9', borderBottomWidth: 2 }}>
 
                             {this.state.orderInfo[0].status == 'PENDING' && (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Order Request</Text>
+                                <Text style={{ fontSize: 23, fontWeight: 'bold' }}>Order Request</Text>
                             )}
 
                             {this.state.orderInfo[0].status == 'ACCEPTED' && (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Upcoming Order</Text>
+                                <Text style={{ fontSize: 23, fontWeight: 'bold' }}>Upcoming Order</Text>
                             )}
 
                             {this.state.orderInfo[0].status == 'COMPLETE' && (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Completed Service</Text>
+                                <Text style={{ fontSize: 23, fontWeight: 'bold' }}>Completed Service</Text>
                             )}
 
                             {this.state.orderInfo[0].status == 'COMPLETEP' && (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Pending Completion</Text>
+                                <Text style={{ fontSize: 23, fontWeight: 'bold' }}>Pending Completion</Text>
                             )}
 
                             {this.state.orderInfo[0].status == 'ACTIVE' && (
-                                <Text style={{ fontSize: 25, fontWeight: 'bold' }}>Active</Text>
+                                <Text style={{ fontSize: 23, fontWeight: 'bold' }}>Active</Text>
                             )}
 
                         </View>
 
-                        <View style={{ padding: 20, paddingTop: 0, borderBottomColor: '#dfe6e9', borderBottomWidth: 2, marginBottom: 10 }}>
-                            <View style={{ flexDirection: 'row', marginBottom: 30 }}>
+                        <View style={{ padding: 20, paddingTop:0, marginBottom: 10 }}>
+                            
+                            <Text style={{fontSize:14, color:'#7f8c8d', paddingBottom:10}}>Seller Info</Text>
+                            <View style={{ flexDirection: 'row', marginBottom: 30, marginLeft:20 }}>
                                 <View style={{ flex: .7 }}>
                                     <Image source={{ uri: this.state.buyerInfo.photo }} style={{ height: 85, width: 85, borderRadius: 50 }} />
                                 </View>
@@ -335,7 +346,13 @@ class Order extends Component {
                                 </View>
                             </View>
 
-                            <View style={{ alignContent: 'flex-start', alignItems: 'flex-start', marginRight: 25 }}>
+                            <Text style={{ fontSize: 14, color: '#7f8c8d', paddingBottom: 10 }}>Service Name</Text>
+                            <View style={{ marginLeft: 20, marginBottom: 15 }}>
+                                <Text style={{ fontSize: 18 }}>{this.state.orderInfo[0].serviceName}</Text>
+                            </View>
+
+                            <Text style={{fontSize:14, color:'#7f8c8d', paddingBottom:10}}>Service Info</Text>
+                            <View style={{ alignContent: 'flex-start', alignItems: 'flex-start', marginHorizontal: 20, marginBottom:15 }}>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ marginRight: 10, color: '#E88D72' }} name="map-marker" size={25} />
                                     {this.state.orderInfo[0].status == 'ACTIVE' && (
@@ -364,32 +381,33 @@ class Order extends Component {
                                 </View>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="timer-sand" size={25} />
-                                    {this.state.orderInfo[0].status !== 'COMPLETE' && (
+                                    {!complete && (
                                         <Text style={{ fontSize: 17 }}>Expected: {duration}</Text>
                                     )}
                                     {this.state.orderInfo[0].status == 'COMPLETE' && (
                                         <Text style={{ fontSize: 17 }}>{this.state.orderInfo[0].actualDuration}</Text>
                                     )}
+                                    {this.state.orderInfo[0].status == 'COMPLETEP' && (
+                                        <Text style={{ fontSize: 17 }}>{this.state.orderDuration}</Text>
+                                    )}
                                 </View>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="currency-usd" size={25} />
-                                    {this.state.orderInfo[0].status !== 'COMPLETE' && (
+                                    {!complete && (
                                         <Text style={{ fontSize: 17 }}>Expected: ${estCost} (${this.state.orderInfo[0].price} / Hr)</Text>
                                     )}
                                     {this.state.orderInfo[0].status == 'COMPLETE' && (
                                         <Text style={{ fontSize: 17 }}>${this.state.orderInfo[0].totalCost}</Text>
-                                    )}                                    
+                                    )}
+                                    {this.state.orderInfo[0].status == 'COMPLETEP' && (
+                                        <Text style={{ fontSize: 17 }}>${this.state.totalCost}</Text>
+                                    )}                                               
                                 </View>
                             </View>
-                        </View>
 
-                        <View style={{ marginLeft: 30, marginTop: 15 }}>
-                            <View>
-                                <Text style={{ fontSize: 14, color: '#7f8c8d' }}>Service Name</Text>
-                                <Text style={{ fontSize: 18, marginBottom: 10 }}>{this.state.orderInfo[0].serviceName}</Text>
-                                <Text style={{ fontSize: 14, color: '#7f8c8d' }}>Note From Buyer</Text>
+                            <Text style={{ fontSize: 14, color: '#7f8c8d', paddingBottom: 10 }}>Your Comment</Text>
+                            <View style={{ marginLeft: 20, marginBottom: 15 }}>
                                 <Text style={{ fontSize: 18 }}>{this.state.orderInfo[0].note}</Text>
-
                             </View>
                         </View>
 
