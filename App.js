@@ -452,7 +452,7 @@ export default class App extends React.Component {
         console.log(notification);
         console.log('orderId : ' + notification.data.orderId);
         const { title, body } = notification;
-        this.showAlert(title, body);
+       // this.showAlert(title, body);
     });
   
     /*
@@ -461,7 +461,7 @@ export default class App extends React.Component {
     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
         const { title, body } = notificationOpen.notification;
 
-        this.showAlert(title, body);
+        //this.showAlert(title, body);
     });
   
     /*
@@ -470,7 +470,7 @@ export default class App extends React.Component {
     const notificationOpen = await firebase.notifications().getInitialNotification();
     if (notificationOpen) {
         const { title, body } = notificationOpen.notification;
-        this.showAlert(title, body);
+        //this.showAlert(title, body);
     }
     /*
     * Triggered for data only payload in foreground
