@@ -1,20 +1,13 @@
 import React, { Component } from "react";
 import {
-  StyleSheet,
   Text,
   View,
-  SafeAreaView,
   TextInput,
-  Platform,
-  ScrollView,
   TouchableOpacity,
   ImageBackground,
   Image
 } from "react-native";
-import Icon from "react-native-vector-icons/EvilIcons";
-import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
-import CategoryCard from '../appViews/CategoryCard.js';
-import ServicePreview from '../../ServicePreview.js';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 class SignIn extends Component {
   constructor(props) {
@@ -58,7 +51,7 @@ class SignIn extends Component {
           style={st.btnEye}
           onPress={this.props.showPass}
         >
-          <Icon2
+          <Icon
             name={this.props.press == false ? "eye" : "eye-off"}
             size={28}
             color={"rgba(255,255,255,0.7)"}
