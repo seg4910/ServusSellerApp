@@ -38,6 +38,7 @@ class Service extends Component {
                   this.setState({price: this.state.serviceInfo[0].priceHr});
                   this.setState({serviceCategory: this.state.serviceInfo[0].serviceCategory});
                   this.setState({locationId: this.state.serviceInfo[0].locationId})
+                  this.setState({servicePhoto: this.state.serviceInfo[0].photo})
                 
                 fetch(`http://localhost:8080/api/getAccountInfo?type=${'sellers'}&id=${this.state.serviceInfo[0].sellerID}`)
                 .then((response) => response.json())
@@ -109,6 +110,7 @@ class Service extends Component {
           loadServices = {this.loadServices}
           goBack = {this.goBack}
           city = {this.state.city}
+          servicePhoto = {this.state.servicePhoto}
           />
         );
     }

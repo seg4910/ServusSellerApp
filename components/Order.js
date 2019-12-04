@@ -378,7 +378,7 @@ class Order extends Component {
                                 </View>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="clock-outline" size={25} />
-                                    <Text style={{ fontSize: 17 }}>{Moment(this.state.orderInfo[0].dateScheduled).format('hh:mm a')}</Text>
+                                    <Text style={{ fontSize: 17 }}>{this.state.orderInfo[0].shiftTime}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                                     <Icon2 style={{ paddingRight: 10, color: '#E88D72' }} name="timer-sand" size={25} />
@@ -397,9 +397,12 @@ class Order extends Component {
                                     {!complete && (
                                         <Text style={{ fontSize: 17 }}>Expected: ${estCost} (${this.state.orderInfo[0].price} / Hr)</Text>
                                     )}
-                                    {this.state.orderInfo[0].status == 'COMPLETE' && (
-                                        <Text style={{ fontSize: 17 }}>${this.state.orderInfo[0].totalCost}</Text>
-                                    )}
+                                        {this.state.orderInfo[0].status == 'COMPLETE' && this.state.orderInfo[0].tip !== null && (
+                                            <Text style={{ fontSize: 17 }}>${this.state.orderInfo[0].totalCost} + ${this.state.orderInfo[0].tip} (Tip)</Text>
+                                        )} 
+                                        {this.state.orderInfo[0].status == 'COMPLETE' && this.state.orderInfo[0].tip == null && (
+                                            <Text style={{ fontSize: 17 }}>${this.state.orderInfo[0].totalCost}</Text>
+                                        )}   
                                     {this.state.orderInfo[0].status == 'COMPLETEP' && (
                                         <Text style={{ fontSize: 17 }}>${this.state.totalCost}</Text>
                                     )}                                               

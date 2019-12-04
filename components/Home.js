@@ -179,7 +179,7 @@ class Home extends Component {
                 <View style={{ alignItems: 'center' }}>
                   <Text style={{ fontSize: 45, fontWeight: 'bold', color: '#E88D72' }}>{Moment(order.dateScheduled).format('DD')}</Text>
                   <Text style={{ fontSize: 20, color: '#E88D72', marginTop: -13 }}>{Moment(order.dateScheduled).format('MMMM')}</Text>
-                  <Text style={{ fontSize: 16, color: '#7f8c8d', paddingTop: 7 }}>{Moment(order.dateScheduled).format('LT')}</Text>
+                  <Text style={{ fontSize: 16, color: '#7f8c8d', paddingTop: 7 }}>{order.shiftTime}</Text>
                 </View>
               </View>
             </TouchableOpacity>
