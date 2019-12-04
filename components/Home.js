@@ -75,7 +75,7 @@ class Home extends Component {
             sellerOrders: responseJson.orders
           }, () => {
             this.state.sellerOrders && this.state.sellerOrders.map((order) => {
-              fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=sellers`)
+              fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=users`)
                 .then((response) => response.json())
                 .then((responseJson) => {
                   fetch(`http://localhost:8080/api/getLocation?id=${responseJson.locationId}`)
@@ -86,7 +86,10 @@ class Home extends Component {
                         buyerCity: locationResponseJson.locationInfo[0].city,
                         buyerName: responseJson.name,
                       }
-                      : null;
+                      : 'null';
+                    })
+                    .catch((error) => {
+                      console.error(error);
                     });
                 })
                 .catch((error) => {

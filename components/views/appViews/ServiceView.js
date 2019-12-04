@@ -189,7 +189,7 @@ class ServiceView extends Component {
                     <Icon2 color='#E88D72' name="map-marker-radius" size={45} />
                     <Text style={{ fontSize: 20 }}>{this.props.city}</Text>
                   </View>
-                  <View style={{ flex: 1, alignItems: 'center' }}>
+                  <View style={{ flex: 1, alignItems: 'center', marginTop:7 }}>
                     <Icon color='#E88D72' name="dollar" size={40} />
                     <Text style={{ fontSize: 20 }}>{this.props.price} / Hr</Text>
                   </View>
@@ -197,7 +197,7 @@ class ServiceView extends Component {
               </View>
             </View>
 
-            <View style={{ display: "flex", flexDirection: "column", marginTop: 20 }}>
+            <View style={{ display: "flex", flexDirection: "column", marginTop: 10 }}>
             <Text style={{ fontSize: 14, color: '#7f8c8d', paddingBottom: 10, marginTop:15 }}>Description</Text>
               <View style={{ marginLeft: 10, marginBottom: 20 }}>
                 <Text style={{ marginLeft: 5, fontSize: 18 }}>{this.props.serviceDescription}</Text>
@@ -207,7 +207,7 @@ class ServiceView extends Component {
             <Text style={{ fontSize: 14, color: '#7f8c8d', paddingBottom: 10, marginTop:0 }}>Reviews</Text>
             <ScrollView style={{ marginLeft: 10 }}>{this.getRatings()}</ScrollView>
 
-<View style={{flex:1, marginTop:20, paddingBottom:20, justifyContent:'flex-end'}}>
+<View style={{flex:1, marginTop:25, paddingBottom:20, justifyContent:'flex-end'}}>
             <View style={{ flex:0.5, flexDirection: 'row', marginHorizontal: 10 }}>
 
               <View style={{ flex: 1, marginRight: 5 }}>
@@ -249,22 +249,6 @@ class ServiceView extends Component {
                 </View>
               </View>
             </View>
-            {
-              this.props.sellerPhoto ? 
-                <Image
-                  source={{ uri: this.props.sellerPhoto }}
-                  style={{
-                    width: 90,
-                    height: 90,
-                    borderRadius: 55
-                  }}
-                />
-              :
-                <Icon
-                  name="user-circle"
-                  size={63}
-                />
-            }
           </Modal>
           </View>
         </ScrollView>        
