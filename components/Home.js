@@ -17,9 +17,7 @@ class Home extends Component {
       pending: [],
       upcoming: [],
       past: [],
-      buyerNames: [],
-      buyerPhone: '',
-      buyerEmail: '',
+      buyerInfo: {},
       refreshing: false,
       routes: [
         { key: 'first', title: 'Accepted' },
@@ -69,15 +67,6 @@ class Home extends Component {
   }
 
   retrieveOrderInfo = () => {
-    function contains(a, obj) {
-      var i = a.length;
-      while (i--) {
-        if (a[i].buyerId === obj.buyerId && a[i].buyerName === obj.buyerName) {
-          return true;
-        }
-      }
-      return false;
-    }
     AsyncStorage.getItem('userId', (err, result) => {
       fetch(`http://localhost:8080/api/getSellerOrders?id=${result}`)
         .then(response => response.json())
@@ -89,14 +78,16 @@ class Home extends Component {
               fetch(`http://localhost:8080/api/getAccountInfo?id=${order.buyerId}&type=sellers`)
                 .then((response) => response.json())
                 .then((responseJson) => {
-                  const temporay_name = {
-                    buyerId: responseJson.id,
-                    buyerName: responseJson.name,
-                  }
-                  const newBuyerNames = contains(this.state.buyerNames, temporay_name) ? this.state.buyerNames : this.state.buyerNames.push(temporay_name);
-                  this.setState({
-                    buyernames: newBuyerNames,
-                  })
+                  fetch(`http://localhost:8080/api/getLocation?id=${responseJson.locationId}`)
+                    .then((response) => response.json())
+                    .then((locationResponseJson) => {
+                      !this.state.buyerInfo[order.buyerId] ? this.state.buyerInfo[order.buyerId] = {
+                        postalCode: locationResponseJson.locationInfo[0].postalCode,
+                        buyerCity: locationResponseJson.locationInfo[0].city,
+                        buyerName: responseJson.name,
+                      }
+                      : null;
+                    });
                 })
                 .catch((error) => {
                   console.error(error);
@@ -118,13 +109,16 @@ class Home extends Component {
   }
 
   getOrders = (status) => {
+    const {
+      sellerOrders,
+      buyerInfo
+    } = this.state;
     let duration;
-    if (this.state.sellerOrders) {
+    if (sellerOrders) {
 
       const currentTime = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
-      return this.state.sellerOrders.map((order) => {
-
+      return sellerOrders.map((order) => {
         var timeUntilOrderStart = Moment(currentTime).diff(order.dateScheduled, 'minutes');
 
         if (order.size == 'SM') {
@@ -134,11 +128,10 @@ class Home extends Component {
         } else if (order.size == 'LG') {
           duration = '2-3 Hours'
         }
-
         if (order.status == status) {
           return (
             <TouchableOpacity onPress={() => this.viewOrder(order.id)} key={order.id} elevation={2} style={{
-              padding: 20, height: 150, margin: 20, marginBottom: 5, borderRadius: 8, backgroundColor: '#fff',
+              padding: 20, height: 165, margin: 20, marginBottom: 5, borderRadius: 8, backgroundColor: '#fff',
               shadowColor: 'black',
               shadowOffset: {
                 width: 0,
@@ -150,16 +143,20 @@ class Home extends Component {
             }}>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 20 }}>{
-                    this.state.buyerNames.map((name) => name.buyerId === order.buyerId ? name.buyerName : "")
-                  }</Text>
+                  <Text style={{ fontSize: 20 }}>
+                    { buyerInfo[order.buyerId] ? buyerInfo[order.buyerId].buyerName : null }
+                  </Text>
                   <View style={{ paddingTop: 10, flexDirection: 'row' }}>
                     <Icon2 style={{ paddingRight: 10, color: '#7f8c8d' }} name="clock-outline" size={25} />
                     <Text style={{ fontSize: 16 }}>{duration}</Text>
                   </View>
                   <View style={{ paddingTop: 0, flexDirection: 'row' }}>
                     <Icon2 style={{ paddingRight: 10, color: '#7f8c8d' }} name="map-marker" size={25} />
-                    <Text style={{ fontSize: 16 }}>300 Bank Street, Ottawa</Text>
+                    <Text style={{ fontSize: 16 }}>
+                    {
+                      buyerInfo[order.buyerId] ? `${buyerInfo[order.buyerId].buyerCity}, ${buyerInfo[order.buyerId].postalCode}` : null
+                    }
+                    </Text>
                   </View>
 
                   {order.status == 'PENDING' && (
@@ -190,7 +187,7 @@ class Home extends Component {
 
         }
       })
-    } else if (this.state.sellerOrders==null) {
+    } else if (sellerOrders==null) {
       return [];
     }
   }

@@ -105,8 +105,6 @@ class ServiceView extends Component {
   }
 
   render() { 
-
-    console.log(this.props);
     if (this.props.ratings !== undefined) {
       return (
         <ScrollView>
@@ -251,8 +249,23 @@ class ServiceView extends Component {
                 </View>
               </View>
             </View>
+            {
+              this.props.sellerPhoto ? 
+                <Image
+                  source={{ uri: this.props.sellerPhoto }}
+                  style={{
+                    width: 90,
+                    height: 90,
+                    borderRadius: 55
+                  }}
+                />
+              :
+                <Icon
+                  name="user-circle"
+                  size={63}
+                />
+            }
           </Modal>
-
           </View>
         </ScrollView>        
 /*         <View style={{ flex: 1 }}>
