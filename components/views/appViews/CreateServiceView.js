@@ -212,7 +212,7 @@ class CreateServiceView extends Component {
             />
           </View>
 
-          <View style={{ marginLeft: 80, marginRight: 80, marginBottom: 30 }}>
+          <View style={{ marginLeft: 80, marginRight: 80, marginBottom: 10 }}>
             <TouchableOpacity
               style={st.btnUpload}
               onPress={() => this.handleChoosePhoto()}>
