@@ -4,9 +4,10 @@ import {
     Text,
     View,
     TouchableOpacity,
-    Image
+    Image,
 } from "react-native";
 import Moment from 'moment';
+import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/MaterialCommunityIcons";
 import Modal from "react-native-modal";
 
@@ -52,7 +53,6 @@ class Order extends Component {
         fetch('http://localhost:8080/api/viewOrder?id=' + orderId)
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson.order);
                 this.setState({
                     orderInfo: responseJson.order
                 }, () => {
@@ -140,8 +140,6 @@ class Order extends Component {
         })
             .then(response => response.json())
             .then(responseJson => {
-                console.log('here');
-                console.log(responseJson);
             })
             .catch(error => {
                 console.log(error);
@@ -154,8 +152,6 @@ class Order extends Component {
         if (resp == 'ACCEPT') {
             // seller accepts the order request
             this.setState({ isAccModalVisible: !this.state.isAccModalVisible });
-
-            console.log(this.state.buyerInfo.fcmToken);
 
             fetch('http://localhost:8080/api/respondToRequest?resp=ACCEPTED&id=' + this.state.orderId, {
                 method: 'POST',
@@ -331,7 +327,12 @@ class Order extends Component {
                             <Text style={{fontSize:14, color:'#7f8c8d', paddingBottom:10}}>Seller Info</Text>
                             <View style={{ flexDirection: 'row', marginBottom: 30, marginLeft:20 }}>
                                 <View style={{ flex: .7 }}>
-                                    <Image source={{ uri: this.state.buyerInfo.photo }} style={{ height: 85, width: 85, borderRadius: 50 }} />
+                                    {
+                                        null ?
+                                            <Image source={{ uri: this.state.buyerInfo.photo }} style={{ height: 85, width: 85, borderRadius: 50 }} />
+                                        :
+                                            <Icon name="user-circle" size={63}/>
+                                    }
                                 </View>
 
                                 <View style={{}}>
