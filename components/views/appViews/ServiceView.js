@@ -232,7 +232,7 @@ class ServiceView extends Component {
             <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
               <View style={{ height: 200, width: 350, backgroundColor: '#fff', borderRadius: 20 }}>
                 <View style={{ flex: 1, flexDirection: 'column' }}>
-                  <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Confirm Cancel Order</Text>
+                  <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 25, paddingHorizontal: 20, paddingTop: 30 }}>Confirm Cancel Service</Text>
                   <Text style={{ textAlign: 'center', fontSize: 20, padding: 20 }}>Are you sure?</Text>
                   <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-end' }}>
                     <TouchableOpacity
