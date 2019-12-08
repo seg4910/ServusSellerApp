@@ -151,7 +151,7 @@ class AccountView extends Component {
               left: WIDTH / 2 - 30,
             }}
             name="user-circle"
-            size={63}
+            size={70}
           />
         }
 

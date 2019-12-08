@@ -409,9 +409,9 @@ class Order extends Component {
                                 </View>
                             </View>
 
-                            <Text style={{ fontSize: 14, color: '#7f8c8d', paddingBottom: 10 }}>Your Comment</Text>
+                            <Text style={{ fontSize: 14, color: '#7f8c8d', paddingBottom: 10 }}>Notes</Text>
                             <View style={{ marginLeft: 20, marginBottom: 15 }}>
-                                <Text style={{ fontSize: 18 }}>{this.state.orderInfo[0].note}</Text>
+                                <Text style={{ fontSize: 18 }}>No comments</Text>
                             </View>
                         </View>
 
