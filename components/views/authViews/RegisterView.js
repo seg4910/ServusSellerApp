@@ -34,6 +34,7 @@ class Register extends Component {
         style={st.authContainer}
       >
         <View style={st.logoContainer}>
+
           <Text style={st.servus}>Welome to Servus!</Text>
         </View>
 
