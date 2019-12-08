@@ -23,10 +23,6 @@ class SignIn extends Component {
       style={st.authContainer}
     >
       <View style={st.logoContainer}>
-        <Image
-          source={require("../../../image/React.js_logo-512.png")}
-          style={st.logo}
-        />
         <Text style={st.servus}>Welcome back, {this.props.firstName}!</Text>
       </View>
       <Text style={st.heading2}> To continue, please verify it's you </Text>
