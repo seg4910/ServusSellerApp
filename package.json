@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "lottie-react-native": "^3.3.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mysql": "^2.17.1",
     "node-fetch": "^2.6.0",
     "react": "16.8.6",
